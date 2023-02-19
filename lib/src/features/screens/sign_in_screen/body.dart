@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:project_x/src/features/screens/otp_verification_screen/otp_verification.dart';
 
 import '../../../common_widgets/defaultButton.dart';
 import '../../../constants/constants.dart';
@@ -83,10 +85,7 @@ class Body extends StatelessWidget {
                 child: DefaultButton(
                     text: "Sign In",
                     pressed: () {
-                      // Navigator.push(
-                      //     context,
-                      //     MaterialPageRoute(
-                      //         builder: (context) => const OtpVerification()));
+                      Get.to(() => OtpVerification());
                     }),
               ),
               SizedBox(height: getScreenHeight(15)),

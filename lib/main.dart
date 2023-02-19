@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:project_x/src/constants/theme.dart';
 
 import 'src/features/screens/sign_in_screen/sign_in.dart';
@@ -12,11 +13,11 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return GetMaterialApp(
       theme: theme(),
       darkTheme: darkTheme(),
-      // themeMode: ThemeMode.dark,
-      themeMode: ThemeMode.light,
+      themeMode: ThemeMode.dark,
+      // themeMode: ThemeMode.light,
       debugShowCheckedModeBanner: false,
       home: SignInScreen(),
     );

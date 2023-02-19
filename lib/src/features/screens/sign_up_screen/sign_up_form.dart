@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:project_x/src/features/screens/otp_verification_screen/otp_verification.dart';
 
 import '../../../common_widgets/defaultButton.dart';
 import '../../../constants/constants.dart';
@@ -119,10 +121,7 @@ class _SignUpFormState extends State<SignUpForm> {
                   // if (formKey.currentState!.validate()) {
                   //   return;
                   // }
-                  // Navigator.push(
-                  //     context,
-                  //     MaterialPageRoute(
-                  //         builder: (context) => const OtpVerification()));
+                  Get.to(() => OtpVerification());
                 }),
           ),
         ],
