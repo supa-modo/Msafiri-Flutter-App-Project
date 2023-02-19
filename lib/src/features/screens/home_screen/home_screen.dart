@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import '../../../constants/constants.dart';
 import '../../../size_config/size_config.dart';
@@ -11,8 +12,22 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     SizeConfig.init(context);
     return Scaffold(
-      backgroundColor: const Color.fromARGB(235, 203, 212, 245),
+      backgroundColor: Theme.of(context).brightness == Brightness.dark
+          ? Color.fromARGB(197, 17, 17, 17)
+          : const Color.fromARGB(235, 203, 212, 245),
       appBar: AppBar(
+        backgroundColor: Theme.of(context).brightness == Brightness.dark
+            ? Color.fromARGB(197, 17, 17, 17)
+            : const Color.fromARGB(235, 188, 197, 229),
+        systemOverlayStyle: SystemUiOverlayStyle(
+          statusBarColor: Theme.of(context).brightness == Brightness.dark
+              ? Color.fromARGB(197, 27, 27, 27)
+              : Color.fromARGB(235, 180, 187, 212),
+          statusBarIconBrightness:
+              Theme.of(context).brightness == Brightness.dark
+                  ? Brightness.light
+                  : Brightness.dark,
+        ),
         iconTheme: const IconThemeData(color: Colors.black),
         titleTextStyle: TextStyle(
           fontSize: getScreenWidth(22),

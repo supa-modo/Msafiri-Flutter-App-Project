@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:project_x/src/features/screens/account_details_screen/account_details.dart';
 
 import '../../../../constants/constants.dart';
 import '../../../../size_config/size_config.dart';
@@ -12,11 +14,7 @@ class my_account extends StatelessWidget {
   Widget build(BuildContext context) {
     return TextButton(
       onPressed: () {
-        // Navigator.push(
-        //     context,
-        //     MaterialPageRoute(
-        //         builder: (context) =>
-        //             const AccountScreen()));
+        Get.to(() => AccountScreen());
       },
       child: Column(
         children: [

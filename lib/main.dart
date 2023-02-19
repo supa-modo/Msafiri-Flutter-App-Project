@@ -3,8 +3,10 @@ import 'package:get/get.dart';
 import 'package:project_x/src/constants/theme.dart';
 
 import 'src/features/screens/sign_in_screen/sign_in.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
+  SharedPreferences.setMockInitialValues({});
   runApp(const MyApp());
 }
 
@@ -16,8 +18,8 @@ class MyApp extends StatelessWidget {
     return GetMaterialApp(
       theme: theme(),
       darkTheme: darkTheme(),
-      themeMode: ThemeMode.dark,
-      // themeMode: ThemeMode.light,
+      // themeMode: ThemeMode.dark,
+      themeMode: ThemeMode.light,
       debugShowCheckedModeBanner: false,
       home: SignInScreen(),
     );

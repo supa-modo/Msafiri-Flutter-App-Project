@@ -11,7 +11,7 @@ import 'payment_list.dart';
 import 'view_map.dart';
 
 class Body extends StatefulWidget {
-  const Body({super.key});
+  const Body({Key? key}) : super(key: key);
 
   @override
   State<Body> createState() => _BodyState();
@@ -49,7 +49,6 @@ class _BodyState extends State<Body> {
       child: SingleChildScrollView(
         child: Column(
           children: [
-            // SizedBox(height: SizeConfig.screenHeight! * 0.0005),
             SizedBox(
               height: getScreenHeight(263),
               child: Column(
@@ -114,8 +113,10 @@ class _BodyState extends State<Body> {
               ),
             ),
             Container(
-              decoration: const BoxDecoration(
-                  color: Colors.white,
+              decoration: BoxDecoration(
+                  color: Theme.of(context).brightness == Brightness.dark
+                      ? Color.fromARGB(225, 37, 36, 36)
+                      : Colors.white,
                   borderRadius: BorderRadius.only(
                       topLeft: Radius.circular(30),
                       topRight: Radius.circular(30))),
