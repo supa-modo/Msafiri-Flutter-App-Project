@@ -5,7 +5,6 @@ import 'package:flutter/services.dart';
 
 import '../../../size_config/size_config.dart';
 
-
 class QrCodeScanScreen2 extends StatefulWidget {
   const QrCodeScanScreen2({super.key});
 
@@ -72,13 +71,13 @@ class _QrCodeScanScreen2State extends State<QrCodeScanScreen2> {
   }
 
   void _onQRViewCreated(QRViewController controller) {
-    // _controller = controller;
-    // _controller.scannedDataStream.listen((scanData) {
-    //   final paymentProvider =
-    //       Provider.of<PaymentProvider>(context, listen: false);
-    //   paymentProvider.paymentDetails = scanData as String;
-    //   // Navigator.pop(context, _paymentDetails);
-    // });
+    _controller = controller;
+    _controller.scannedDataStream.listen((scanData) {
+      // final paymentProvider =
+      //     Provider.of<PaymentProvider>(context, listen: false);
+      // paymentProvider.paymentDetails = scanData as String;
+      // Navigator.pop(context, _paymentDetails);
+    });
     controller.pauseCamera();
     controller.resumeCamera();
   }

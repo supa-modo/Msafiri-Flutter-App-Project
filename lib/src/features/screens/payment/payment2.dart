@@ -5,6 +5,10 @@ import '../../../constants/constants.dart';
 import '../../../size_config/size_config.dart';
 import 'payment_options.dart';
 
+import 'package:get/get.dart';
+
+import 'qr_screen.dart';
+
 class QRScanScreen1 extends StatefulWidget {
   const QRScanScreen1({super.key});
 
@@ -23,12 +27,6 @@ class _QRScanScreenState1 extends State<QRScanScreen1> {
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.white,
-        elevation: 0,
-        systemOverlayStyle: const SystemUiOverlayStyle(
-          statusBarColor: Color.fromARGB(197, 219, 219, 219),
-          statusBarIconBrightness: Brightness.dark,
-        ),
         iconTheme: const IconThemeData(color: Colors.black),
         titleTextStyle: TextStyle(
           fontSize: getScreenWidth(21),
@@ -70,7 +68,9 @@ class _QRScanScreenState1 extends State<QRScanScreen1> {
                           child: Column(
                             children: [
                               TextButton(
-                                onPressed: () {},
+                                onPressed: () {
+                                  Get.to(() => QrCodeScanScreen2());
+                                },
                                 child: Column(
                                   children: [
                                     Icon(

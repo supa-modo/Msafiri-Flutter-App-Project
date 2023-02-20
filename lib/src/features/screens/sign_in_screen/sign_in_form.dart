@@ -19,6 +19,13 @@ class _SignInFormState extends State<SignInForm> {
   late String password;
 
   @override
+  void dispose(){
+    super.dispose();
+    _emailField.dispose();
+    _passwordField.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Form(
       key: formKey,

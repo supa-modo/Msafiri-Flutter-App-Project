@@ -12,6 +12,8 @@ dependencies:
   carousel_slider: ^4.2.1
   cupertino_icons: ^1.0.2
   dots_indicator: ^2.1.0
+  firebase_auth: ^4.2.8
+  firebase_core: ^2.6.1
   flutter:
     sdk: flutter
   flutter_native_splash: ^2.2.17

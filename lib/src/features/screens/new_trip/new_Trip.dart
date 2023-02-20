@@ -107,7 +107,7 @@ class _SearchLocationScreenState extends State<SearchLocationScreen> {
             const Divider(
               height: 5,
               thickness: 2,
-              color: Color.fromARGB(209, 212, 212, 212),
+              color: Color.fromARGB(160, 228, 226, 226),
             ),
             Padding(
               padding: EdgeInsets.symmetric(
@@ -130,7 +130,7 @@ class _SearchLocationScreenState extends State<SearchLocationScreen> {
             const Divider(
               height: 4,
               thickness: 2,
-              color: Color.fromARGB(209, 212, 212, 212),
+              color: Color.fromARGB(160, 228, 226, 226),
             ),
             LocationListTile(
               press: () {},
@@ -287,8 +287,10 @@ class _SearchLocationScreenState extends State<SearchLocationScreen> {
         },
         style: ElevatedButton.styleFrom(
           padding: EdgeInsets.symmetric(horizontal: getScreenWidth(10)),
-          backgroundColor: Color.fromARGB(209, 212, 212, 212),
-          foregroundColor: appPrimaryColor,
+          backgroundColor: Color.fromARGB(160, 228, 226, 226),
+          foregroundColor: Theme.of(context).brightness == Brightness.dark
+              ? Colors.white
+              : appPrimaryColor,
           elevation: 0,
           fixedSize: Size(double.infinity, getScreenWidth(40)),
           shape: const RoundedRectangleBorder(

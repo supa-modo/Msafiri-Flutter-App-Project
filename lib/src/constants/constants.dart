@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 
 import '../size_config/size_config.dart';
 
-const appPrimaryColor = Color.fromARGB(255, 50, 130, 250);
+const appPrimaryColor = Color.fromARGB(232, 50, 130, 250);
 const appTextColor = Color.fromARGB(255, 56, 56, 56);
 const darkAppTextColor = Colors.white;
-const textButtonColor = Color.fromARGB(255, 50, 130, 250);
+const textButtonColor = Color.fromARGB(228, 50, 130, 250);
 
 final headingStyle = TextStyle(
   // fontSize: getScreenWidth(29),

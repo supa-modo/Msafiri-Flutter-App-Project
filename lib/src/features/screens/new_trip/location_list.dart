@@ -25,14 +25,17 @@ class LocationListTile extends StatelessWidget {
             maxLines: 2,
             overflow: TextOverflow.ellipsis,
             style: TextStyle(
-                fontSize: getScreenWidth(15),
-                color: Color.fromARGB(235, 68, 68, 68)),
+              fontSize: getScreenWidth(15),
+              color: Theme.of(context).brightness == Brightness.dark
+                  ? Color.fromARGB(199, 255, 255, 255)
+                  : Color.fromARGB(235, 68, 68, 68),
+            ),
           ),
         ),
         const Divider(
           height: 2,
           thickness: 2,
-          color: Color.fromARGB(209, 212, 212, 212),
+          color: Color.fromARGB(160, 228, 226, 226),
         ),
       ],
     );
