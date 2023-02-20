@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:project_x/src/features/screens/new_trip/new_Trip.dart';
 
 import '../../../../constants/constants.dart';
 import '../../../../size_config/size_config.dart';
@@ -12,11 +14,7 @@ class newTrip extends StatelessWidget {
   Widget build(BuildContext context) {
     return TextButton(
       onPressed: () {
-        // Navigator.push(
-        //     context,
-        //     MaterialPageRoute(
-        //         builder: (context) =>
-        //             const SearchLocationScreen()));
+        Get.to(() => SearchLocationScreen());
       },
       child: Column(
         children: [
