@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:project_x/src/services/auth_repository.dart';
 
 import '../size_config/size_config.dart';
 
@@ -18,7 +19,9 @@ class logout_button extends StatelessWidget {
           shape: MaterialStateProperty.all<RoundedRectangleBorder>(
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(10))),
         ),
-        onPressed: () {},
+        onPressed: () {
+          Auth_repository.instance.logout();
+        },
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [

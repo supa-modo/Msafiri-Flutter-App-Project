@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:project_x/src/features/controllers/sign_up_controller.dart';
 import 'package:project_x/src/features/screens/otp_verification_screen/otp_verification.dart';
 
 import '../../../common_widgets/defaultButton.dart';
@@ -14,12 +15,6 @@ class SignUpForm extends StatefulWidget {
 }
 
 class _SignUpFormState extends State<SignUpForm> {
-  final TextEditingController _emailField = TextEditingController();
-  final TextEditingController _nameField = TextEditingController();
-  final TextEditingController _phoneNumberField = TextEditingController();
-  final TextEditingController _passwordField = TextEditingController();
-
-  final formKey = GlobalKey<FormState>();
   late String name, phoneNumber, email;
   late String password;
   bool _isOperator = false;
@@ -27,6 +22,9 @@ class _SignUpFormState extends State<SignUpForm> {
 
   @override
   Widget build(BuildContext context) {
+    final controller = Get.put(SignUpController());
+    final formKey = GlobalKey<FormState>();
+
     return Form(
       autovalidateMode: AutovalidateMode.always,
       key: formKey,
@@ -35,14 +33,20 @@ class _SignUpFormState extends State<SignUpForm> {
           SizedBox(height: getScreenHeight(30)),
           Padding(
             padding: EdgeInsets.symmetric(horizontal: getScreenWidth(10)),
-            child:
-                SizedBox(height: getScreenHeight(46), child: emailFormField()),
+            child: SizedBox(
+                height: getScreenHeight(46),
+                child: emailFormField(
+                  controller.email,
+                )),
           ),
           SizedBox(height: getScreenHeight(20)),
           Padding(
             padding: EdgeInsets.symmetric(horizontal: getScreenWidth(10)),
-            child:
-                SizedBox(height: getScreenHeight(46), child: nameFormField()),
+            child: SizedBox(
+                height: getScreenHeight(46),
+                child: nameFormField(
+                  controller.name,
+                )),
           ),
           SizedBox(
             height: getScreenHeight(20),
@@ -50,7 +54,10 @@ class _SignUpFormState extends State<SignUpForm> {
           Padding(
             padding: EdgeInsets.symmetric(horizontal: getScreenWidth(10)),
             child: SizedBox(
-                height: getScreenHeight(46), child: phoneNumberFormField()),
+                height: getScreenHeight(46),
+                child: phoneNumberFormField(
+                  controller.phoneNumber,
+                )),
           ),
           SizedBox(
             height: getScreenHeight(20),
@@ -58,7 +65,10 @@ class _SignUpFormState extends State<SignUpForm> {
           Padding(
             padding: EdgeInsets.symmetric(horizontal: getScreenWidth(10)),
             child: SizedBox(
-                height: getScreenHeight(46), child: passwordFormField()),
+                height: getScreenHeight(46),
+                child: passwordFormField(
+                  controller.password,
+                )),
           ),
           SizedBox(
             height: getScreenHeight(10),
@@ -118,10 +128,11 @@ class _SignUpFormState extends State<SignUpForm> {
             child: DefaultButton(
                 text: "Sign Up",
                 pressed: () {
-                  // if (formKey.currentState!.validate()) {
-                  //   return;
-                  // }
-                  Get.to(() => OtpVerification());
+                  if (formKey.currentState!.validate()) {
+                    SignUpController.Instance.registerUser(
+                        controller.email.text.trim(),
+                        controller.password.text.trim());
+                  }
                 }),
           ),
         ],
@@ -129,9 +140,8 @@ class _SignUpFormState extends State<SignUpForm> {
     );
   }
 
-  TextFormField emailFormField() {
+  TextFormField emailFormField(controller) {
     return TextFormField(
-      controller: _emailField,
       keyboardType: TextInputType.emailAddress,
       textInputAction: TextInputAction.next,
       // validator: (value) {
@@ -164,9 +174,9 @@ class _SignUpFormState extends State<SignUpForm> {
     );
   }
 
-  TextFormField nameFormField() {
+  TextFormField nameFormField(controller) {
     return TextFormField(
-        controller: _nameField,
+        // controller: _nameField,
         keyboardType: TextInputType.name,
         textInputAction: TextInputAction.next,
         // validator: (value) {
@@ -200,9 +210,9 @@ class _SignUpFormState extends State<SignUpForm> {
         ));
   }
 
-  TextFormField phoneNumberFormField() {
+  TextFormField phoneNumberFormField(controller) {
     return TextFormField(
-        controller: _phoneNumberField,
+        // controller: _phoneNumberField,
         keyboardType: TextInputType.phone,
         textInputAction: TextInputAction.next,
         onSaved: (newValue) => phoneNumber = newValue!,
@@ -224,9 +234,9 @@ class _SignUpFormState extends State<SignUpForm> {
         ));
   }
 
-  TextFormField passwordFormField() {
+  TextFormField passwordFormField(controller) {
     return TextFormField(
-        controller: _passwordField,
+        // controller: _passwordField,
         keyboardType: TextInputType.visiblePassword,
         obscureText: true,
         textInputAction: TextInputAction.next,
@@ -253,31 +263,5 @@ class _SignUpFormState extends State<SignUpForm> {
               borderSide: const BorderSide(color: appPrimaryColor)),
           floatingLabelBehavior: FloatingLabelBehavior.always,
         ));
-  }
-}
-
-class AccountText extends StatelessWidget {
-  const AccountText({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Text(
-          "Already have an account? ",
-          style: TextStyle(fontSize: getScreenWidth(13)),
-        ),
-        GestureDetector(
-            onTap: () => Navigator.of(context).pop(),
-            child: Text(
-              "Sign In ",
-              style: TextStyle(
-                  fontSize: getScreenWidth(13),
-                  color: textButtonColor,
-                  fontWeight: FontWeight.bold),
-            ))
-      ],
-    );
   }
 }

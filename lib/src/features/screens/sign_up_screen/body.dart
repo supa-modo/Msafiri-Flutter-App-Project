@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../constants/constants.dart';
 import '../../../size_config/size_config.dart';
+import 'account_text.dart';
 import 'sign_up_form.dart';
 
 class Body extends StatelessWidget {
