@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:project_x/src/features/screens/otp_verification_screen/otp_verification.dart';
+import 'package:project_x/src/services/auth_repository.dart';
 
 import '../../../common_widgets/defaultButton.dart';
 import '../../../constants/constants.dart';
@@ -50,44 +51,7 @@ class Body extends StatelessWidget {
                 padding: EdgeInsets.symmetric(horizontal: getScreenWidth(5)),
                 child: const SignInForm(),
               ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  TextButton(
-                    onPressed: () {},
-                    // TODO : Add a new screen for phone number sign in
-                    child: Text(
-                      "Login with phone number",
-                      style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          color: textButtonColor,
-                          fontSize: getScreenWidth(13)),
-                    ),
-                  ),
-                  SizedBox(height: getScreenHeight(5)),
-                  TextButton(
-                    onPressed: () {
-                      Forgot_passwordScreen.forgot_bottomSheet(context);
-                    },
-                    child: Text(
-                      "Forgot Password?",
-                      style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          color: textButtonColor,
-                          fontSize: getScreenWidth(13)),
-                    ),
-                  ),
-                ],
-              ),
-              SizedBox(height: getScreenHeight(10)),
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: getScreenWidth(90)),
-                child: DefaultButton(
-                    text: "Sign In",
-                    pressed: () {
-                      Get.to(() => OtpVerification());
-                    }),
-              ),
+
               SizedBox(height: getScreenHeight(15)),
               Text(
                 "Or",

@@ -15,12 +15,14 @@ class logout_button extends StatelessWidget {
       child: TextButton(
         style: ButtonStyle(
           backgroundColor: MaterialStateProperty.all<Color>(
-              const Color.fromARGB(255, 224, 224, 224)),
+              Theme.of(context).brightness == Brightness.dark
+                  ? Color.fromARGB(179, 37, 36, 36)
+                  : const Color.fromARGB(255, 224, 224, 224)),
           shape: MaterialStateProperty.all<RoundedRectangleBorder>(
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(10))),
         ),
         onPressed: () {
-          Auth_repository.instance.logout();
+          AuthRepository.instance.logout();
         },
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,

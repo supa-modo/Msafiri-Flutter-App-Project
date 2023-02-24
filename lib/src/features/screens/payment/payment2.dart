@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:qr_code_scanner/qr_code_scanner.dart';
 
 import '../../../constants/constants.dart';
 import '../../../size_config/size_config.dart';
@@ -20,7 +21,19 @@ final _paymentDetailsController = TextEditingController();
 
 class _QRScanScreenState1 extends State<QRScanScreen1> {
   bool pDetails = true;
-  @override
+  Barcode? scannedData;
+
+  Future<void> navigateToQrScanner() async {
+    final result = await Navigator.push<String>(
+        context, MaterialPageRoute(builder: (context) => QrCodeScanScreen2()));
+
+    // Handle the scanned data once the child screen is closed and returned
+    setState(() {
+      scannedData =
+          (result ?? '') as Barcode?; // Update the scanned data variable
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     SizeConfig.init(context);
@@ -68,9 +81,7 @@ class _QRScanScreenState1 extends State<QRScanScreen1> {
                           child: Column(
                             children: [
                               TextButton(
-                                onPressed: () {
-                                  Get.to(() => QrCodeScanScreen2());
-                                },
+                                onPressed: navigateToQrScanner,
                                 child: Column(
                                   children: [
                                     Icon(
@@ -105,30 +116,23 @@ class _QRScanScreenState1 extends State<QRScanScreen1> {
                     ),
                     SizedBox(height: getScreenHeight(10)),
                     Container(
-                      height: getScreenHeight(55),
-                      width: getScreenWidth(400),
-                      decoration: BoxDecoration(
-                          color: const Color.fromARGB(255, 190, 190, 190),
-                          borderRadius: BorderRadius.circular(15)),
-                      child: FutureBuilder(
-                        future: Future.delayed(Duration.zero),
-                        builder: (context, snapshot) {
-                          return Padding(
-                            padding: EdgeInsets.symmetric(
-                                horizontal: getScreenWidth(20),
-                                vertical: getScreenHeight(15)),
-                            child: TextFormField(
-                              initialValue:
-                                  "!! Payment details not available for now !!",
-                              style: TextStyle(
-                                  fontSize: getScreenWidth(13),
-                                  color: Colors.red),
-                              enabled: true,
-                            ),
-                          );
-                        },
-                      ),
-                    ),
+                        height: getScreenHeight(55),
+                        width: getScreenWidth(400),
+                        decoration: BoxDecoration(
+                            color: const Color.fromARGB(255, 190, 190, 190),
+                            borderRadius: BorderRadius.circular(15)),
+                        child: Padding(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: getScreenWidth(20),
+                            vertical: getScreenHeight(15),
+                          ),
+                          child: scannedData != null
+                              ? Text(
+                                  'Scanned Data: ${scannedData!.code}',
+                                  style: TextStyle(fontSize: 12),
+                                )
+                              : Container(), // Replace with any other widget you want to show when scannedData is null
+                        )),
                     SizedBox(height: getScreenHeight(5)),
                     Text(
                       'Or',

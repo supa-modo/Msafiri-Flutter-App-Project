@@ -13,8 +13,27 @@ class QrCodeScanScreen2 extends StatefulWidget {
 }
 
 class _QrCodeScanScreen2State extends State<QrCodeScanScreen2> {
+  final GlobalKey qrKey = GlobalKey(debugLabel: 'QR');
   late QRViewController _controller;
   bool _torchEnabled = false;
+
+  void _onQRViewCreated(QRViewController controller) {
+    setState(() {
+      this._controller = controller;
+    });
+    controller.scannedDataStream.listen((scanData) {
+      Navigator.pop(
+          context, scanData); // Pass the scanData to the parent screen
+    });
+    controller.pauseCamera();
+    controller.resumeCamera();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +41,7 @@ class _QrCodeScanScreen2State extends State<QrCodeScanScreen2> {
       body: Stack(
         children: <Widget>[
           QRView(
-            key: GlobalKey(debugLabel: 'QR'),
+            key: qrKey,
             onQRViewCreated: _onQRViewCreated,
             cameraFacing: CameraFacing.back,
             overlay: QrScannerOverlayShape(
@@ -68,23 +87,5 @@ class _QrCodeScanScreen2State extends State<QrCodeScanScreen2> {
         ],
       ),
     );
-  }
-
-  void _onQRViewCreated(QRViewController controller) {
-    _controller = controller;
-    _controller.scannedDataStream.listen((scanData) {
-      // final paymentProvider =
-      //     Provider.of<PaymentProvider>(context, listen: false);
-      // paymentProvider.paymentDetails = scanData as String;
-      // Navigator.pop(context, _paymentDetails);
-    });
-    controller.pauseCamera();
-    controller.resumeCamera();
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
   }
 }

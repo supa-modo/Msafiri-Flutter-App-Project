@@ -8,22 +8,29 @@ class OtpForm extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        verificationInput(context),
-        verificationInput(context),
-        verificationInput(context),
-        verificationInput(context),
-      ],
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: getScreenWidth(40)),
+      child: Row(
+        // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          verificationInput(context),
+          SizedBox(width: getScreenWidth(10)),
+          verificationInput(context),
+          SizedBox(width: getScreenWidth(10)),
+          verificationInput(context),
+          SizedBox(width: getScreenWidth(10)),
+          verificationInput(context),
+        ],
+      ),
     );
   }
 
   SizedBox verificationInput(BuildContext context) {
     return SizedBox(
-      height: getScreenHeight(68),
-      width: getScreenWidth(64),
+      height: getScreenHeight(60),
+      width: getScreenWidth(56),
       child: TextFormField(
+        // controller: _codeController,
         onChanged: (value) {
           if (value.length == 1) {
             FocusScope.of(context).nextFocus();
@@ -31,6 +38,11 @@ class OtpForm extends StatelessWidget {
         },
         style: Theme.of(context).textTheme.headline6,
         keyboardType: TextInputType.number,
+        decoration: InputDecoration(
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(15),
+          ),
+        ),
         textAlign: TextAlign.center,
         inputFormatters: [
           LengthLimitingTextInputFormatter(1),

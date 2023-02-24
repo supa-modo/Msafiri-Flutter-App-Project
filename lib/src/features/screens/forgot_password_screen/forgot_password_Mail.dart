@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:project_x/src/common_widgets/defaultButton.dart';
 import 'package:project_x/src/constants/constants.dart';
+import 'package:project_x/src/features/screens/home_screen/home_screen.dart';
 import 'package:project_x/src/size_config/size_config.dart';
 
 class Forgot_password_Mail extends StatelessWidget {
@@ -78,7 +80,9 @@ class Forgot_password_Mail extends StatelessWidget {
                       width: double.infinity,
                       height: getScreenHeight(47),
                       child: TextButton(
-                        onPressed: null,
+                        onPressed: () {
+                          Get.to(() => HomeScreen());
+                        },
                         child: Text("Next",
                             style: TextStyle(
                               fontSize: getScreenWidth(16),

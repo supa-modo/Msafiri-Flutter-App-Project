@@ -4,8 +4,8 @@ import 'package:project_x/src/features/screens/home_screen/home_screen.dart';
 import 'package:project_x/src/features/screens/sign_in_screen/sign_in.dart';
 import 'package:project_x/src/services/exceptions/sign_up_exceptions.dart';
 
-class Auth_repository extends GetxController {
-  static Auth_repository get instance => Get.find();
+class AuthRepository extends GetxController {
+  static AuthRepository get instance => Get.find();
 
   final _auth = FirebaseAuth.instance;
   late final Rx<User?> firebaseUser;
@@ -23,28 +23,18 @@ class Auth_repository extends GetxController {
         : Get.offAll(() => HomeScreen());
   }
 
-  void _handleAuthStateChanges(User? user) {
-    if (user != null) {
-      Get.offAll(() => const HomeScreen());
-    } else {
-      Get.offAll(() => const SignInScreen());
-    }
-  }
-
   Future<void> createUserWithEmailAndPassword(
-    String email,
-    String password,
-  ) async {
+      String email, String password) async {
     try {
-      final result = await _auth.createUserWithEmailAndPassword(
-        email: email,
-        password: password,
-      );
-      _auth.authStateChanges().listen(_handleAuthStateChanges);
+      await _auth.createUserWithEmailAndPassword(
+          email: email, password: password);
+      firebaseUser.value != null
+          ? Get.offAll(() => const HomeScreen())
+          : Get.offAll(() => const SignInScreen());
     } on FirebaseAuthException catch (e) {
       final ex = SignUpWithEmailAndPassword_failure.code(e.code);
       print('FIREBASE AUTH EXCEPTION - ${ex.message}');
-       throw ex;
+      throw ex;
     } catch (_) {
       const ex = SignUpWithEmailAndPassword_failure();
       print('EXCEPTION - ${ex.message}');

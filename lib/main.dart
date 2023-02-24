@@ -14,7 +14,7 @@ void main() {
   SharedPreferences.setMockInitialValues({});
   WidgetsFlutterBinding.ensureInitialized();
   Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform)
-      .then((value) => Get.put(Auth_repository()));
+      .then((value) => Get.put(AuthRepository()));
   runApp(const MyApp());
 }
 

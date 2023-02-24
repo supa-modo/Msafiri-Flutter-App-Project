@@ -10,11 +10,11 @@ class back_home_button extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: getScreenWidth(85)),
+      padding: EdgeInsets.symmetric(horizontal: getScreenWidth(90)),
       child: TextButton(
         style: ButtonStyle(
           backgroundColor: MaterialStateProperty.all<Color>(
-              Color.fromARGB(175, 243, 242, 242)),
+              Color.fromARGB(151, 230, 238, 248)),
           shape: MaterialStateProperty.all<RoundedRectangleBorder>(
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(10))),
         ),
@@ -27,7 +27,7 @@ class back_home_button extends StatelessWidget {
             Icon(
               size: getScreenWidth(28),
               Icons.home,
-              color: Color.fromARGB(255, 134, 133, 133),
+              color: Color.fromARGB(136, 68, 68, 68),
             ),
             SizedBox(width: getScreenHeight(10)),
             Text("Back Home",
@@ -37,9 +37,10 @@ class back_home_button extends StatelessWidget {
                     fontSize: getScreenHeight(15),
                     color: const Color.fromARGB(255, 80, 79, 79))),
             SizedBox(width: getScreenHeight(5)),
-            const Icon(
+            Icon(
               Icons.arrow_forward_ios,
-              color: Color.fromARGB(255, 134, 133, 133),
+              size: getScreenWidth(17),
+              color: Color.fromARGB(136, 68, 68, 68),
             ),
           ],
         ),

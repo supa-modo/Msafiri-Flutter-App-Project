@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 
+import '../../../common_widgets/defaultButton.dart';
 import '../../../constants/constants.dart';
+import '../../../services/auth_repository.dart';
 import '../../../size_config/size_config.dart';
+import 'forgot_bottomSheet.dart';
 
 class SignInForm extends StatefulWidget {
   const SignInForm({super.key});
@@ -11,6 +14,7 @@ class SignInForm extends StatefulWidget {
 }
 
 class _SignInFormState extends State<SignInForm> {
+  // bool _isLoading = false;
   final TextEditingController _emailField = TextEditingController();
   final TextEditingController _passwordField = TextEditingController();
 
@@ -19,7 +23,7 @@ class _SignInFormState extends State<SignInForm> {
   late String password;
 
   @override
-  void dispose(){
+  void dispose() {
     super.dispose();
     _emailField.dispose();
     _passwordField.dispose();
@@ -41,6 +45,45 @@ class _SignInFormState extends State<SignInForm> {
             padding: EdgeInsets.symmetric(horizontal: getScreenWidth(10)),
             child: SizedBox(
                 height: getScreenHeight(48), child: passwordFormField()),
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              TextButton(
+                onPressed: () {},
+                // TODO : Add a new screen for phone number sign in
+                child: Text(
+                  "Login with phone number",
+                  style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: textButtonColor,
+                      fontSize: getScreenWidth(13)),
+                ),
+              ),
+              SizedBox(height: getScreenHeight(5)),
+              TextButton(
+                onPressed: () {
+                  Forgot_passwordScreen.forgot_bottomSheet(context);
+                },
+                child: Text(
+                  "Forgot Password?",
+                  style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: textButtonColor,
+                      fontSize: getScreenWidth(13)),
+                ),
+              ),
+            ],
+          ),
+          SizedBox(height: getScreenHeight(10)),
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: getScreenWidth(90)),
+            child: DefaultButton(
+                text: "Sign In",
+                pressed: () {
+                  AuthRepository.instance.loginUserWithEmailAndPassword(
+                      _emailField.text, _passwordField.text);
+                }),
           ),
         ],
       ),

@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import 'package:project_x/src/features/controllers/sign_up_controller.dart';
-import 'package:project_x/src/features/screens/otp_verification_screen/otp_verification.dart';
+import 'package:project_x/src/services/auth_repository.dart';
 
 import '../../../common_widgets/defaultButton.dart';
 import '../../../constants/constants.dart';
@@ -20,10 +18,25 @@ class _SignUpFormState extends State<SignUpForm> {
   bool _isOperator = false;
   bool _isPassenger = false;
 
+  final TextEditingController _emailField = TextEditingController();
+  final TextEditingController _passwordField = TextEditingController();
+  final TextEditingController _nameField = TextEditingController();
+  final TextEditingController _phoneNumberField = TextEditingController();
+
+  final formKey = GlobalKey<FormState>();
+
+  @override
+  void dispose() {
+    super.dispose();
+    _emailField.dispose();
+    _passwordField.dispose();
+    _nameField.dispose();
+    _phoneNumberField.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
-    final controller = Get.put(SignUpController());
-    final formKey = GlobalKey<FormState>();
+    // final controller = Get.put(SignUpController());
 
     return Form(
       autovalidateMode: AutovalidateMode.always,
@@ -33,20 +46,14 @@ class _SignUpFormState extends State<SignUpForm> {
           SizedBox(height: getScreenHeight(30)),
           Padding(
             padding: EdgeInsets.symmetric(horizontal: getScreenWidth(10)),
-            child: SizedBox(
-                height: getScreenHeight(46),
-                child: emailFormField(
-                  controller.email,
-                )),
+            child:
+                SizedBox(height: getScreenHeight(46), child: emailFormField()),
           ),
           SizedBox(height: getScreenHeight(20)),
           Padding(
             padding: EdgeInsets.symmetric(horizontal: getScreenWidth(10)),
-            child: SizedBox(
-                height: getScreenHeight(46),
-                child: nameFormField(
-                  controller.name,
-                )),
+            child:
+                SizedBox(height: getScreenHeight(46), child: nameFormField()),
           ),
           SizedBox(
             height: getScreenHeight(20),
@@ -54,10 +61,7 @@ class _SignUpFormState extends State<SignUpForm> {
           Padding(
             padding: EdgeInsets.symmetric(horizontal: getScreenWidth(10)),
             child: SizedBox(
-                height: getScreenHeight(46),
-                child: phoneNumberFormField(
-                  controller.phoneNumber,
-                )),
+                height: getScreenHeight(46), child: phoneNumberFormField()),
           ),
           SizedBox(
             height: getScreenHeight(20),
@@ -65,10 +69,7 @@ class _SignUpFormState extends State<SignUpForm> {
           Padding(
             padding: EdgeInsets.symmetric(horizontal: getScreenWidth(10)),
             child: SizedBox(
-                height: getScreenHeight(46),
-                child: passwordFormField(
-                  controller.password,
-                )),
+                height: getScreenHeight(46), child: passwordFormField()),
           ),
           SizedBox(
             height: getScreenHeight(10),
@@ -128,11 +129,12 @@ class _SignUpFormState extends State<SignUpForm> {
             child: DefaultButton(
                 text: "Sign Up",
                 pressed: () {
-                  if (formKey.currentState!.validate()) {
-                    SignUpController.Instance.registerUser(
-                        controller.email.text.trim(),
-                        controller.password.text.trim());
-                  }
+                  // if (formKey.currentState!.validate()) {
+                  //   SignUpController.Instance.registerUser(
+                  //       _emailField.text.trim(), _passwordField.text.trim());
+                  // }
+                  AuthRepository.instance.createUserWithEmailAndPassword(
+                      _emailField.text.trim(), _passwordField.text.trim());
                 }),
           ),
         ],
@@ -140,8 +142,9 @@ class _SignUpFormState extends State<SignUpForm> {
     );
   }
 
-  TextFormField emailFormField(controller) {
+  TextFormField emailFormField() {
     return TextFormField(
+      controller: _emailField,
       keyboardType: TextInputType.emailAddress,
       textInputAction: TextInputAction.next,
       // validator: (value) {
@@ -174,9 +177,9 @@ class _SignUpFormState extends State<SignUpForm> {
     );
   }
 
-  TextFormField nameFormField(controller) {
+  TextFormField nameFormField() {
     return TextFormField(
-        // controller: _nameField,
+        controller: _nameField,
         keyboardType: TextInputType.name,
         textInputAction: TextInputAction.next,
         // validator: (value) {
@@ -210,9 +213,9 @@ class _SignUpFormState extends State<SignUpForm> {
         ));
   }
 
-  TextFormField phoneNumberFormField(controller) {
+  TextFormField phoneNumberFormField() {
     return TextFormField(
-        // controller: _phoneNumberField,
+        controller: _phoneNumberField,
         keyboardType: TextInputType.phone,
         textInputAction: TextInputAction.next,
         onSaved: (newValue) => phoneNumber = newValue!,
@@ -234,9 +237,9 @@ class _SignUpFormState extends State<SignUpForm> {
         ));
   }
 
-  TextFormField passwordFormField(controller) {
+  TextFormField passwordFormField() {
     return TextFormField(
-        // controller: _passwordField,
+        controller: _passwordField,
         keyboardType: TextInputType.visiblePassword,
         obscureText: true,
         textInputAction: TextInputAction.next,

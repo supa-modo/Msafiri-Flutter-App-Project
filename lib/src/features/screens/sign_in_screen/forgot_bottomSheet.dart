@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:project_x/src/constants/constants.dart';
 import 'package:project_x/src/features/screens/forgot_password_screen/forgot_password_Mail.dart';
+import 'package:project_x/src/features/screens/otp_verification_screen/otpOriginal.dart';
+import 'package:project_x/src/features/screens/otp_verification_screen/otp_verification.dart';
 
 import '../../../size_config/size_config.dart';
 
@@ -78,7 +80,18 @@ class Forgot_passwordScreen {
                     ),
                     SizedBox(height: getScreenHeight(20)),
                     GestureDetector(
-                      onTap: () {},
+                      onTap: () {
+                        // Navigator.pop(context);
+                        // Get.to(() => OtpVerification(
+                        //       phoneNumber: '254790193402',
+                        //       verificationId: '',
+                        //     ));
+                        Navigator.pop(context);
+                        Get.to(() => OtpVerification2(
+                              phoneNumber: '+254712345678',
+                              verificationId: '',
+                            ));
+                      },
                       child: Container(
                         padding: EdgeInsets.symmetric(
                             horizontal: getScreenWidth(15),
