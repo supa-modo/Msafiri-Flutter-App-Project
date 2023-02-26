@@ -24,7 +24,7 @@ class _QRScanScreenState1 extends State<QRScanScreen1> {
   Barcode? scannedData;
 
   Future<void> navigateToQrScanner() async {
-    final result = await Navigator.push<String>(
+    Barcode? result = await Navigator.push<Barcode>(
         context, MaterialPageRoute(builder: (context) => QrCodeScanScreen2()));
 
     // Handle the scanned data once the child screen is closed and returned

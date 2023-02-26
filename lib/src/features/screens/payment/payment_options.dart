@@ -8,6 +8,7 @@ import '../../../constants/theme.dart';
 import '../../../size_config/size_config.dart';
 
 class CheckboxRow extends StatefulWidget {
+  
   final bool pDetails;
   const CheckboxRow({Key? key, required this.pDetails}) : super(key: key);
 
@@ -30,15 +31,18 @@ class _CheckboxRowState extends State<CheckboxRow> {
   // String mpesaNumber = '';
   String _phoneNumber = '254790193402';
   String _paybillNumber = '';
-  String _accountNumber = '';
+  String _accountNumber = 'MpesaDemo';
   String _tillNumberInput = '';
   double amount = 0.0;
+
+  
 
   Future<dynamic> startTransaction(
       {required double amount,
       required String phoneNumber,
       required bool isPaybill,
       required String paybillNumber,
+      required String tillNumber,
       required String accountNumber}) async {
     try {
       String partyB, businessShortCode;
@@ -49,7 +53,7 @@ class _CheckboxRowState extends State<CheckboxRow> {
         businessShortCode = paybillNumber;
         transactionType = TransactionType.CustomerPayBillOnline;
       } else {
-        partyB = businessShortCode = paybillNumber;
+        partyB = businessShortCode = tillNumber;
         transactionType = TransactionType.CustomerBuyGoodsOnline;
       }
 
@@ -363,6 +367,7 @@ class _CheckboxRowState extends State<CheckboxRow> {
                       phoneNumber: _phoneNumber,
                       isPaybill: _paybill,
                       paybillNumber: _paybillNumber,
+                      tillNumber: _tillNumberInput,
                       accountNumber: _accountNumber,
                     );
                     // Navigator.push(
