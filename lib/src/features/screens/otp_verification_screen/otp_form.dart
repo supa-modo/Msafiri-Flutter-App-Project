@@ -27,7 +27,7 @@ class OtpForm extends StatelessWidget {
 
   SizedBox verificationInput(BuildContext context) {
     return SizedBox(
-      height: getScreenHeight(60),
+      height: getScreenHeight(64),
       width: getScreenWidth(56),
       child: TextFormField(
         // controller: _codeController,

@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:project_x/src/features/screens/new_trip/place_autocompl.dart';
 
 import '../../../common_widgets/defaultButton.dart';
 import '../../../constants/constants.dart';
 import '../../../size_config/size_config.dart';
-import 'location_list.dart';
 
 class SearchLocationScreen extends StatefulWidget {
   const SearchLocationScreen({Key? key, this.pressed}) : super(key: key);
@@ -76,66 +76,57 @@ class _SearchLocationScreenState extends State<SearchLocationScreen> {
                 // child: const MapScreen3(),
               ),
             ),
-            Form(
-              child: Padding(
-                padding: EdgeInsets.only(
-                    left: getScreenWidth(16),
-                    right: getScreenWidth(16),
-                    bottom: getScreenHeight(10)),
-                child: TextFormField(
-                  onChanged: (value) {
-                    // placesAutocomplete(value);
-                  },
-                  textInputAction: TextInputAction.search,
-                  decoration: InputDecoration(
-                    hintText: "Search your destination location",
-                    hintStyle: TextStyle(fontSize: getScreenWidth(15)),
-                    // prefixIcon: Padding(
-                    //   padding:
-                    //       EdgeInsets.symmetric(vertical: getScreenHeight(12)),
-                    //   child: SvgPicture.asset(
-                    //     "assets/icons/location.svg",
-                    //     height: getScreenHeight(10),
-                    //     width: getScreenWidth(10),
-                    //     color: const Color.fromARGB(255, 143, 141, 141),
-                    //   ),
-                    // )
-                  ),
-                ),
-              ),
-            ),
-            const Divider(
-              height: 5,
-              thickness: 2,
-              color: Color.fromARGB(160, 228, 226, 226),
-            ),
-            Padding(
-              padding: EdgeInsets.symmetric(
-                  vertical: getScreenHeight(5), horizontal: getScreenWidth(8)),
-              child: SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: Row(
-                  children: [
-                    commonLocations("KFA"),
-                    commonLocations("Rafiki"),
-                    commonLocations("Kabu Main Gate"),
-                    commonLocations("Kiamunyi"),
-                    commonLocations("Kampi Ya Moto"),
-                    commonLocations("Mercy Njeri"),
-                    commonLocations("Barkesen"),
-                  ],
-                ),
-              ),
-            ),
-            const Divider(
-              height: 4,
-              thickness: 2,
-              color: Color.fromARGB(160, 228, 226, 226),
-            ),
-            LocationListTile(
-              press: () {},
-              location: "Kabarak, Nakuru, Kenya",
-            ),
+            // LocationSearch(),
+            // Form(
+            //   child: Padding(
+            //     padding: EdgeInsets.only(
+            //         left: getScreenWidth(16),
+            //         right: getScreenWidth(16),
+            //         bottom: getScreenHeight(10)),
+            //     child: TextFormField(
+            //       onChanged: (value) {
+            //         // placesAutocomplete(value);
+            //       },
+            //       textInputAction: TextInputAction.search,
+            //       decoration: InputDecoration(
+            //         hintText: "Search your destination location",
+            //         hintStyle: TextStyle(fontSize: getScreenWidth(15)),
+            //       ),
+            //     ),
+            //   ),
+            // ),
+            // const Divider(
+            //   height: 5,
+            //   thickness: 2,
+            //   color: Color.fromARGB(160, 228, 226, 226),
+            // ),
+            // Padding(
+            //   padding: EdgeInsets.symmetric(
+            //       vertical: getScreenHeight(5), horizontal: getScreenWidth(8)),
+            //   child: SingleChildScrollView(
+            //     scrollDirection: Axis.horizontal,
+            //     child: Row(
+            //       children: [
+            //         commonLocations("KFA"),
+            //         commonLocations("Rafiki"),
+            //         commonLocations("Kabu Main Gate"),
+            //         commonLocations("Kiamunyi"),
+            //         commonLocations("Kampi Ya Moto"),
+            //         commonLocations("Mercy Njeri"),
+            //         commonLocations("Barkesen"),
+            //       ],
+            //     ),
+            //   ),
+            // ),
+            // const Divider(
+            //   height: 4,
+            //   thickness: 2,
+            //   color: Color.fromARGB(160, 228, 226, 226),
+            // ),
+            // LocationListTile(
+            //   press: () {},
+            //   location: "Kabarak, Nakuru, Kenya",
+            // ),
             Container(),
             SizedBox(height: getScreenHeight(20)),
             Text(
@@ -278,7 +269,7 @@ class _SearchLocationScreenState extends State<SearchLocationScreen> {
     );
   }
 
-  Container commonLocations(location) {
+  Container commonLocations(text) {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: getScreenWidth(4)),
       child: ElevatedButton(
@@ -297,7 +288,7 @@ class _SearchLocationScreenState extends State<SearchLocationScreen> {
             borderRadius: BorderRadius.all(Radius.circular(10)),
           ),
         ),
-        child: Text(location,
+        child: Text(text,
             style: TextStyle(
                 fontSize: getScreenWidth(12), fontWeight: FontWeight.w600)),
       ),

@@ -29,8 +29,8 @@ class _OtpVerification2State extends State<OtpVerification2> {
   final _auth = FirebaseAuth.instance;
   bool _isLoading = false;
   late String _verificationId;
-  bool timerInProgress = false;
-  int timer1 = 120;
+  bool _timerInProgress = false;
+  int _timer = 90;
 
   @override
   void initState() {
@@ -44,19 +44,18 @@ class _OtpVerification2State extends State<OtpVerification2> {
     super.dispose();
   }
 
-  void startTimer() {
-    timerInProgress = true;
-    setState(() {});
+  // Starts the timer and updates the UI every second
+  void _startTimer() {
+    _timerInProgress = true;
     Timer.periodic(const Duration(seconds: 1), (timer) {
-      if (timer1 == 0) {
-        timerInProgress = false;
+      if (_timer == 0) {
+        _timerInProgress = false;
         timer.cancel();
-        timer1 = 120;
-        setState(() {});
+        _timer = 90;
       } else {
-        timer1--;
-        setState(() {});
+        _timer--;
       }
+      setState(() {});
     });
   }
 
@@ -87,7 +86,7 @@ class _OtpVerification2State extends State<OtpVerification2> {
             _verificationId = verificationId;
             _isLoading = false;
           });
-          startTimer();
+          _startTimer();
         },
         codeAutoRetrievalTimeout: (verificationId) async {},
       );
@@ -106,7 +105,7 @@ class _OtpVerification2State extends State<OtpVerification2> {
   }
 
   void _resendCode() async {
-    startTimer();
+    _startTimer();
     _verifyCode();
   }
 
@@ -145,7 +144,7 @@ class _OtpVerification2State extends State<OtpVerification2> {
                 ),
                 SizedBox(height: getScreenHeight(10)),
                 Text(
-                  "Enter the verification code sent to \n${widget.phoneNumber}",
+                  "A verification code will be sent to ${widget.phoneNumber} \n Enter the code sent below to complete the verification",
                   textAlign: TextAlign.center,
                 ),
                 TextButton(
@@ -160,42 +159,29 @@ class _OtpVerification2State extends State<OtpVerification2> {
                 const OtpForm(),
 
                 SizedBox(height: getScreenHeight(20)),
-                const Text("Didn't receive any code?"),
-                SizedBox(height: getScreenHeight(10)),
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: getScreenWidth(15)),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                          "Resend code after: ${(timer1 ~/ 60).toString().padLeft(2, '0')}.${(timer1 % 60).toString().padLeft(2, '0')}"),
-                      SizedBox(height: getScreenHeight(10)),
-                      AnimatedOpacity(
-                        opacity: timerInProgress ? 0.5 : 1,
-                        duration: const Duration(milliseconds: 500),
-                        child: TextButton(
-                          onPressed: timerInProgress || _isLoading
-                              ? null
-                              : _resendCode,
-                          style: ButtonStyle(
-                            backgroundColor: MaterialStateProperty.all<Color>(
-                                Color.fromARGB(174, 236, 236, 236)),
-                            shape: MaterialStateProperty.all<
-                                    RoundedRectangleBorder>(
-                                RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(10))),
-                          ),
-                          child: Text(
-                            "Resend Code",
-                            style: TextStyle(
-                                fontSize: getScreenWidth(13),
-                                color: appPrimaryColor,
-                                fontWeight: FontWeight.bold),
-                          ),
+
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      "Didn't receive a code?",
+                      style: TextStyle(
+                        fontSize: getScreenWidth(16),
+                      ),
+                    ),
+                    TextButton(
+                      onPressed: !_timerInProgress ? _resendCode : null,
+                      child: Text(
+                        _timerInProgress
+                            ? "Resend in $_timer seconds"
+                            : "Resend now",
+                        style: TextStyle(
+                          fontSize: getScreenWidth(16),
+                          fontWeight: FontWeight.bold,
                         ),
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
                 SizedBox(height: getScreenHeight(40)),
 

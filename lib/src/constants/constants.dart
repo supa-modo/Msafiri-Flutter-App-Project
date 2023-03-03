@@ -17,8 +17,8 @@ final headingStyle = TextStyle(
 const googleApiKey = "AIzaSyAy4lQ1TLKwunBfXxf6z6RdyyH73sF1vWk";
 // const googleApiKey = "AIzaSyD3BXnCXhtKAlIikVzy-g87xwI-2HJuW0M";
 // const sourceLocation = LatLng(-0.142565, 35.946346);
-const consumerKey = 'm6V86hjnGVGntpYWuSQPTgkANpuCbdO0';
-const consumerSecret = 'CaxXSW9AbY74dVcR';
+const consumerKey = 'Ixr9zvF16Gh2o0OSg5brKfLsJVJwfzbs';
+const consumerSecret = 'hoGvTe4GT5PoIUKG';
 
 // ----------------------------------------------------------
 const Color primaryColor = Color.fromARGB(255, 30, 117, 247);

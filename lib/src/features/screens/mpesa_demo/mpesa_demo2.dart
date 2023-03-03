@@ -1,132 +1,123 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:mpesa_flutter_plugin/mpesa_flutter_plugin.dart';
 
 import '../../../constants/constants.dart';
 import '../../../size_config/size_config.dart';
+import 'hhtp.dart';
 
-class PaymentScreen2 extends StatefulWidget {
-  const PaymentScreen2({super.key});
+class MpesaTransaction extends StatefulWidget {
+  const MpesaTransaction({super.key});
 
   @override
-  _PaymentScreen2State createState() => _PaymentScreen2State();
+  State<MpesaTransaction> createState() => _MpesaTransactionState();
 }
 
-class _PaymentScreen2State extends State<PaymentScreen2> {
-  // final _formKey = GlobalKey<FormState>();
-  late String _mpesaNumber;
-  late double _amount;
+class _MpesaTransactionState extends State<MpesaTransaction> {
+  String _mpesaNumber = '';
+  double _amount = 1;
+  String partyB = '174379';
+
+  final _formKey = GlobalKey<FormState>();
+  // final TextEditingController _phoneNumberField = TextEditingController();
+  // final TextEditingController _amountField = TextEditingController();
+
+  Future<void> startCheckout(
+      {required String userPhone, required double amount}) async {
+    //Preferably expect 'dynamic', response type varies a lot!
+    dynamic transactionInitialisation;
+
+    try {
+      transactionInitialisation = await MpesaFlutterPlugin.initializeMpesaSTKPush(
+          businessShortCode: partyB,
+          transactionType: TransactionType.CustomerPayBillOnline,
+          amount: amount,
+          partyA: userPhone,
+          partyB: partyB,
+          callBackURL:
+              Uri(scheme: "https", host: "1234.1234.co.ke", path: "/1234.php"),
+          accountReference: "shoe",
+          phoneNumber: userPhone,
+          baseUri: Uri(scheme: "https", host: "sandbox.safaricom.co.ke"),
+          transactionDesc: "purchase",
+          passKey:
+              'bfb279f9aa9bdbcf158e97dd71a467cd2e0c893059b10f78e6b72ada1ed2c919');
+
+      print("TRANSACTION RESULT: " + transactionInitialisation.toString());
+
+      return transactionInitialisation;
+    } catch (e) {
+      print("CAUGHT EXCEPTION: " + e.toString());
+    }
+  }
 
   Future<dynamic> startTransaction(
       {required double amount, required String phoneNumber}) async {
+    dynamic transactionInitialization;
     try {
-      final result = await MpesaFlutterPlugin.initializeMpesaSTKPush(
+      transactionInitialization =
+          await MpesaFlutterPlugin.initializeMpesaSTKPush(
         businessShortCode: '174379',
         transactionType: TransactionType
             .CustomerPayBillOnline, //or CustomerBuyGoodsOnline for till numbers
         partyA: phoneNumber,
         partyB: '174379',
-        callBackURL:
-            Uri(scheme: "https", host: "1234.1234.co.ke", path: "/1234.php"),
+        callBackURL: Uri(
+            scheme: 'https',
+            host:
+                'us-central1-pts-project-x2.cloudfunctions.net/mpesaCallback'),
         accountReference: 'Mpesa Demo',
         phoneNumber: phoneNumber,
         baseUri: Uri(scheme: "https", host: "sandbox.safaricom.co.ke"),
-        transactionDesc: 'Mpesa demo',
+        // transactionDesc: 'Mpesa demo',
         passKey:
             'bfb279f9aa9bdbcf158e97dd71a467cd2e0c893059b10f78e6b72ada1ed2c919',
         amount: amount,
       );
 
-      if (result.success) {
-        print('STK Push successful');
-        // do something if success, like showing a success message
-      } else {
-        print('STK Push failed');
-        // show an error message
-      }
+      FirebaseFirestore.instance.collection(partyB).add({
+        'amount': amount,
+        'phoneNumber': phoneNumber,
+        'transactionDetails': transactionInitialization
+      });
+
+      QuerySnapshot querySnapshot =
+          await FirebaseFirestore.instance.collection(partyB).get();
+      List<DocumentSnapshot> documents = querySnapshot.docs;
+      documents.forEach((document) {
+        print('Transaction Details: ${document.data()}');
+      });
+
+      // if (result.success) {
+      //   print('STK Push successful');
+      //   // do something if success, like showing a success message
+      // } else {
+      //   print('STK Push failed');
+      //   // show an error message
+      // }
     } catch (e) {
       print('Error: $e');
       // show an error message
     }
   }
 
-  Future<dynamic> startTillTransaction(
-      {required double amount, required String phoneNumber}) async {
-    try {
-      final result = await MpesaFlutterPlugin.initializeMpesaSTKPush(
-        businessShortCode: '174379',
-        transactionType: TransactionType
-            .CustomerPayBillOnline, //or CustomerBuyGoodsOnline for till numbers
-        partyA: phoneNumber,
-        partyB: '174379',
-        callBackURL:
-            Uri(scheme: "https", host: "1234.1234.co.ke", path: "/1234.php"),
-        accountReference: 'Mpesa Demo',
-        phoneNumber: phoneNumber,
-        baseUri: Uri(scheme: "https", host: "sandbox.safaricom.co.ke"),
-        transactionDesc: 'Mpesa demo',
-        passKey:
-            'bfb279f9aa9bdbcf158e97dd71a467cd2e0c893059b10f78e6b72ada1ed2c919',
-        amount: amount,
-      );
-
-      if (result.success) {
-        print('STK Push successful');
-        // do something if success, like showing a success message
-      } else {
-        print('STK Push failed');
-        // show an error message
-      }
-    } catch (e) {
-      print('Error: $e');
-      // show an error message
-    }
-  }
-
-  Future<dynamic> startPaybillTransaction(
-      {required double amount, required String phoneNumber}) async {
-    try {
-      final result = await MpesaFlutterPlugin.initializeMpesaSTKPush(
-        businessShortCode: '174379',
-        transactionType: TransactionType
-            .CustomerPayBillOnline, //or CustomerBuyGoodsOnline for till numbers
-        partyA: phoneNumber,
-        partyB: '174379',
-        callBackURL:
-            Uri(scheme: "https", host: "1234.1234.co.ke", path: "/1234.php"),
-        accountReference: 'Mpesa Demo',
-        phoneNumber: phoneNumber,
-        baseUri: Uri(scheme: "https", host: "sandbox.safaricom.co.ke"),
-        transactionDesc: 'Mpesa demo',
-        passKey:
-            'bfb279f9aa9bdbcf158e97dd71a467cd2e0c893059b10f78e6b72ada1ed2c919',
-        amount: amount,
-      );
-
-      if (result.success) {
-        print('STK Push successful');
-        // do something if success, like showing a success message
-      } else {
-        print('STK Push failed');
-        // show an error message
-      }
-    } catch (e) {
-      print('Error: $e');
-      // show an error message
-    }
-  }
+  // @override
+  // void dispose() {
+  //   super.dispose();
+  //   _phoneNumberField.dispose();
+  //   _amountField.dispose();
+  // }
 
   @override
   Widget build(BuildContext context) {
     SizeConfig.init(context);
-    // print(SizeConfig.screenHeight);
-    // print(SizeConfig.screenWidth);
     return Scaffold(
       appBar: AppBar(
         title: const Text('Make Payment'),
       ),
       body: Center(
         child: Form(
-          // key: _formKey,
+          key: _formKey,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
@@ -141,6 +132,7 @@ class _PaymentScreen2State extends State<PaymentScreen2> {
               ),
               SizedBox(height: 15),
               TextFormField(
+                // controller: _phoneNumberField,
                 decoration: InputDecoration(
                   prefixText: '254',
                   contentPadding:
@@ -165,6 +157,7 @@ class _PaymentScreen2State extends State<PaymentScreen2> {
               ),
               SizedBox(height: 10),
               TextFormField(
+                // controller: _amountField,
                 decoration: InputDecoration(
                   contentPadding:
                       const EdgeInsets.only(top: 9, bottom: 9, left: 20),
@@ -187,7 +180,8 @@ class _PaymentScreen2State extends State<PaymentScreen2> {
               ),
               TextButton(
                 onPressed: () async {
-                  startTransaction(amount: _amount, phoneNumber: _mpesaNumber);
+                  // startTransaction(amount: 1, phoneNumber: '254790193402');
+                  startCheckout(userPhone: _mpesaNumber, amount: _amount);
                 },
                 child: const Text('Make Payment'),
               ),

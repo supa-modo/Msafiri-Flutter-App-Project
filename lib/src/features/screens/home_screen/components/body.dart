@@ -1,5 +1,6 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
+import 'package:project_x/src/features/screens/new_trip/place_autocompl.dart';
 
 import '../../../../size_config/size_config.dart';
 import 'dots_indicator.dart';
@@ -147,6 +148,7 @@ class _BodyState extends State<Body> {
                       children: [
                         payment_list(),
                         mpesa_demo(),
+                        // LocationSearch(),
                       ],
                     ),
                   ],

@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -37,7 +38,7 @@ class HomeScreen extends StatelessWidget {
         title: Column(
           children: [
             Text(
-              'Hello "User"',
+              'Hello ${FirebaseAuth.instance.currentUser?.displayName?.split(" ")[0] ?? "'User'"}',
               style: TextStyle(
                   fontSize: getScreenWidth(22),
                   color: const Color.fromARGB(255, 83, 82, 82)),

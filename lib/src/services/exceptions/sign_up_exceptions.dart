@@ -26,3 +26,34 @@ class SignUpWithEmailAndPassword_failure {
     }
   }
 }
+
+class LoginWithGoogle_failure {
+  final String message;
+
+  const LoginWithGoogle_failure([this.message = 'An unknown error occurred']);
+
+  factory LoginWithGoogle_failure.code(String code) {
+    switch (code) {
+      case 'account-exists-with-different-credential':
+        return const LoginWithGoogle_failure(
+            'An account with the same email already exists. Try signing in with a different provider.');
+      case 'invalid-credential':
+        return const LoginWithGoogle_failure(
+            'The provided credential is invalid. Please try again.');
+      case 'operation-not-allowed':
+        return const LoginWithGoogle_failure(
+            'Google sign-in is currently disabled. Please contact customer support.');
+      case 'user-disabled':
+        return const LoginWithGoogle_failure(
+            'This user has been disabled. Please contact customer support.');
+      case 'user-not-found':
+        return const LoginWithGoogle_failure(
+            'No user was found with the provided credentials.');
+      case 'wrong-password':
+        return const LoginWithGoogle_failure(
+            'The password provided is incorrect.');
+      default:
+        return const LoginWithGoogle_failure();
+    }
+  }
+}

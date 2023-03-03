@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../constants/constants.dart';
+import '../../../services/auth_repository.dart';
 import '../../../size_config/size_config.dart';
 import 'account_text.dart';
 import 'sign_up_form.dart';
@@ -41,7 +42,9 @@ class Body extends StatelessWidget {
                 child: SizedBox(
                   width: double.infinity,
                   child: OutlinedButton.icon(
-                      onPressed: null,
+                      onPressed: () {
+                        AuthRepository.instance.signInWithGoogle();
+                      },
                       icon: Image(
                         image: AssetImage("assets/images/google_logo.png"),
                         width: getScreenWidth(18),

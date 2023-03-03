@@ -1,90 +1,113 @@
 import 'package:flutter/material.dart';
-
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../../../size_config/size_config.dart';
 import 'edit_text.dart';
 
-class change_password extends StatelessWidget {
-  const change_password({
+class UserPhone extends StatelessWidget {
+  const UserPhone({
     Key? key,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return TextButton(
-      onPressed: () {},
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Row(
-            children: [
-              Icon(
-                size: getScreenWidth(26),
-                Icons.lock,
-                color: Colors.grey,
-              ),
-              SizedBox(width: getScreenWidth(10)),
-              Text("Change Account Password",
-                  // _user.displayName,
-                  style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: getScreenWidth(14),
-                      color: const Color.fromARGB(255, 80, 79, 79))),
-            ],
-          ),
-          const Icon(
-            Icons.arrow_forward_ios,
-            color: Color.fromARGB(255, 119, 119, 119),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class user_phone extends StatelessWidget {
-  const user_phone({
-    Key? key,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Row(
+    User? user = FirebaseAuth.instance.currentUser;
+    String userPhone = user?.phoneNumber ?? 'Not available';
+    return StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
+      stream: FirebaseFirestore.instance
+          .collection('users')
+          .doc(user?.uid)
+          .snapshots(),
+      initialData: null,
+      builder: (BuildContext context,
+          AsyncSnapshot<DocumentSnapshot<Map<String, dynamic>>> snapshot) {
+        if (snapshot.hasError) {
+          return Text('Error: ${snapshot.error}');
+        }
+        if (!snapshot.hasData) {
+          return CircularProgressIndicator();
+        }
+        final phoneData = snapshot.data!.data();
+        String phone = phoneData != null && phoneData.containsKey('phone')
+            ? phoneData['phone']
+            : userPhone;
+        return Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Icon(
-              size: getScreenWidth(26),
-              Icons.phone,
-              color: Colors.grey,
+            Row(
+              children: [
+                Icon(
+                  size: getScreenWidth(26),
+                  Icons.phone,
+                  color: Colors.grey,
+                ),
+                SizedBox(width: getScreenWidth(10)),
+                Text(phone,
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: getScreenWidth(14),
+                        color: const Color.fromARGB(255, 80, 79, 79))),
+              ],
             ),
-            SizedBox(width: getScreenWidth(10)),
-            Text("User Phone number",
-                style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: getScreenWidth(14),
-                    color: const Color.fromARGB(255, 80, 79, 79))),
+            TextButton.icon(
+              icon: Icon(Icons.edit, size: getScreenWidth(18)),
+              label: edit_text(),
+              onPressed: () {
+                showDialog(
+                  context: context,
+                  builder: (context) {
+                    String updatedPhone = phone;
+                    return AlertDialog(
+                      title: Text('Enter your new phone number'),
+                      content: TextField(
+                        maxLength: 9,
+                        onChanged: (value) {
+                          updatedPhone = '254$value';
+                        },
+                        decoration: InputDecoration(
+                            hintText: phone, prefixText: "+254"),
+                      ),
+                      actions: <Widget>[
+                        TextButton(
+                          child: Text('Cancel'),
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          },
+                        ),
+                        TextButton(
+                          child: Text('Save'),
+                          onPressed: () async {
+                            await FirebaseFirestore.instance
+                                .collection('users')
+                                .doc(user?.uid)
+                                .set({
+                              'phone': updatedPhone,
+                            }, SetOptions(merge: true));
+                            Navigator.of(context).pop();
+                          },
+                        )
+                      ],
+                    );
+                  },
+                );
+              },
+            ),
           ],
-        ),
-        TextButton.icon(
-          icon: Icon(Icons.edit, size: getScreenWidth(18)),
-          label: edit_text(),
-          onPressed: () {
-            // handle edit button press
-          },
-        ),
-      ],
+        );
+      },
     );
   }
 }
 
-class user_email extends StatelessWidget {
-  const user_email({
+class UserEmail extends StatelessWidget {
+  const UserEmail({
     Key? key,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    User? user = FirebaseAuth.instance.currentUser;
+    String userEmail = user?.email ?? 'Not available';
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -96,7 +119,7 @@ class user_email extends StatelessWidget {
               color: Colors.grey,
             ),
             SizedBox(width: getScreenWidth(10)),
-            Text("User Account email",
+            Text(userEmail,
                 style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: getScreenWidth(14),
@@ -107,44 +130,45 @@ class user_email extends StatelessWidget {
           icon: Icon(Icons.edit, size: getScreenWidth(18)),
           label: edit_text(),
           onPressed: () {
-            // handle edit button press
-          },
-        ),
-      ],
-    );
-  }
-}
-
-class user_name extends StatelessWidget {
-  const user_name({
-    Key? key,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Row(
-          children: [
-            Icon(
-              size: getScreenWidth(32),
-              Icons.account_circle,
-              color: Colors.grey,
-            ),
-            SizedBox(width: getScreenWidth(10)),
-            Text("User Account Name",
-                style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: getScreenWidth(14),
-                    color: const Color.fromARGB(255, 80, 79, 79))),
-          ],
-        ),
-        TextButton.icon(
-          icon: Icon(Icons.edit, size: getScreenWidth(18)),
-          label: edit_text(),
-          onPressed: () {
-            // handle edit button press
+// handle edit button press
+            showDialog(
+              context: context,
+              builder: (context) {
+                String updatedEmail = userEmail;
+                return AlertDialog(
+                  title: Text('Enter your new email address'),
+                  content: TextField(
+                    onChanged: (value) {
+                      updatedEmail = value;
+                    },
+                    decoration: InputDecoration(hintText: userEmail),
+                  ),
+                  actions: <Widget>[
+                    TextButton(
+                      child: Text('Cancel'),
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                    ),
+                    TextButton(
+                      child: Text('Save'),
+                      onPressed: null,
+                      // () async {
+                      //   await FirebaseAuth.instance.currentUser
+                      //       ?.updateEmail(updatedEmail);
+                      //   await FirebaseFirestore.instance
+                      //       .collection('users')
+                      //       .doc(user?.uid)
+                      //       .set({
+                      //     'email': updatedEmail,
+                      //   });
+                      //   Navigator.of(context).pop();
+                      // },
+                    )
+                  ],
+                );
+              },
+            );
           },
         ),
       ],

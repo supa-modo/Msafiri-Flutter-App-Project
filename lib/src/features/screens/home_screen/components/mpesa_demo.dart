@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:project_x/src/features/screens/mpesa_demo/hhtp.dart';
 import 'package:project_x/src/features/screens/mpesa_demo/mpesa_demo.dart';
+import 'package:project_x/src/features/screens/mpesa_demo/mpesa_demo2.dart';
+import 'package:project_x/src/features/screens/new_trip/place_autocompl.dart';
 
 import '../../../../constants/constants.dart';
 import '../../../../size_config/size_config.dart';
@@ -14,7 +17,10 @@ class mpesa_demo extends StatelessWidget {
   Widget build(BuildContext context) {
     return TextButton(
       onPressed: () {
-        Get.to(() => PaymentScreen2());
+        Get.to(() =>
+            // PaymentScreen2()
+            // MpesaTransaction());
+            MyHomePage());
       },
       child: Column(
         children: [

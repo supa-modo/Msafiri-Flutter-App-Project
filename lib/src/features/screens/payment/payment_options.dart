@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
-
 import 'package:mpesa_flutter_plugin/mpesa_flutter_plugin.dart';
+import 'package:project_x/src/features/screens/home_screen/home_screen.dart';
 
 import '../../../common_widgets/defaultButton.dart';
-import '../../../constants/constants.dart';
 import '../../../constants/theme.dart';
 import '../../../size_config/size_config.dart';
+import 'components/textfields.dart';
+import 'transaction.dart';
 
 class CheckboxRow extends StatefulWidget {
-  
   final bool pDetails;
   const CheckboxRow({Key? key, required this.pDetails}) : super(key: key);
 
@@ -28,53 +28,44 @@ class _CheckboxRowState extends State<CheckboxRow> {
   // final _tillNumberTextController = TextEditingController();
 
   final formKey3 = GlobalKey<FormState>();
-  // String mpesaNumber = '';
   String _phoneNumber = '254790193402';
   String _paybillNumber = '';
   String _accountNumber = 'MpesaDemo';
   String _tillNumberInput = '';
   double amount = 0.0;
 
-  
-
-  Future<dynamic> startTransaction(
-      {required double amount,
-      required String phoneNumber,
-      required bool isPaybill,
-      required String paybillNumber,
-      required String tillNumber,
-      required String accountNumber}) async {
+  Future<dynamic> startCheckout({
+    required String userPhone,
+    required double amount,
+    required bool isPaybill,
+    required bool isTillNumber,
+  }) async {
+    final String partyB = isPaybill ? _paybillNumber : _tillNumberInput;
+    final TransactionType transactionType = isPaybill
+        ? TransactionType.CustomerPayBillOnline
+        : TransactionType.CustomerBuyGoodsOnline;
     try {
-      String partyB, businessShortCode;
-      TransactionType transactionType;
-
-      if (isPaybill) {
-        partyB = paybillNumber;
-        businessShortCode = paybillNumber;
-        transactionType = TransactionType.CustomerPayBillOnline;
-      } else {
-        partyB = businessShortCode = tillNumber;
-        transactionType = TransactionType.CustomerBuyGoodsOnline;
-      }
-
       final result = await MpesaFlutterPlugin.initializeMpesaSTKPush(
-        businessShortCode: businessShortCode,
+        businessShortCode: isPaybill ? _paybillNumber : _tillNumberInput,
         transactionType: transactionType,
-        partyA: phoneNumber,
+        amount: amount,
+        partyA: userPhone,
         partyB: partyB,
         callBackURL:
             Uri(scheme: "https", host: "1234.1234.co.ke", path: "/1234.php"),
-        accountReference: accountNumber,
-        phoneNumber: phoneNumber,
+        accountReference: "MpesaDemo",
+        phoneNumber: _phoneNumber,
         baseUri: Uri(scheme: "https", host: "sandbox.safaricom.co.ke"),
-        transactionDesc: 'Mpesa demo',
+        transactionDesc: "Mpesa demo transaction",
         passKey:
             'bfb279f9aa9bdbcf158e97dd71a467cd2e0c893059b10f78e6b72ada1ed2c919',
-        amount: amount,
       );
+
+      print("TRANSACTION RESULT: " + result.toString());
+
+      return result;
     } catch (e) {
-      print('Error: $e');
-      // show an error message
+      print("CAUGHT EXCEPTION: " + e.toString());
     }
   }
 
@@ -159,20 +150,7 @@ class _CheckboxRowState extends State<CheckboxRow> {
                       TextFormField(
                         enabled: !widget.pDetails == false ? true : false,
                         controller: _phoneNumberTextController,
-                        decoration: InputDecoration(
-                          prefixText: '254',
-                          contentPadding: const EdgeInsets.only(
-                              top: 9, bottom: 9, left: 20),
-                          labelText: "Enter Phone Number",
-                          labelStyle: const TextStyle(
-                              fontSize: 14, fontWeight: FontWeight.w600),
-                          enabledBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(15),
-                              borderSide: BorderSide(color: appPrimaryColor)),
-                          focusedBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(15),
-                              borderSide: BorderSide(color: appPrimaryColor)),
-                        ),
+                        decoration: phoneTextField(),
                         keyboardType: TextInputType.number,
                         maxLength: 9,
                         onChanged: (value) {
@@ -193,13 +171,14 @@ class _CheckboxRowState extends State<CheckboxRow> {
                           visible:
                               _phoneNumber.isEmpty || _phoneNumber.length < 10,
                           child: _phoneNumber.isEmpty
-                              ? Text("Phone Number cannot be empty",
-                                  style: TextStyle(
-                                      fontSize: getScreenWidth(13.5),
-                                      color: Color.fromARGB(255, 255, 38, 23)))
-                              : const Text("Enter a valid phone number",
-                                  style: TextStyle(
-                                      color: Color.fromARGB(255, 255, 38, 23))),
+                              ? Text(
+                                  "Phone Number cannot be empty",
+                                  style: visibilityText(),
+                                )
+                              : Text(
+                                  "Enter a valid phone number",
+                                  style: visibilityText(),
+                                ),
                         ),
                       )
                     ],
@@ -211,20 +190,7 @@ class _CheckboxRowState extends State<CheckboxRow> {
                       TextFormField(
                         enabled: !widget.pDetails == false ? true : false,
                         keyboardType: TextInputType.number,
-                        decoration: InputDecoration(
-                          contentPadding: const EdgeInsets.only(
-                              top: 9, bottom: 9, left: 20),
-                          labelText: "Enter Paybill Number",
-                          labelStyle: TextStyle(
-                              fontSize: getScreenWidth(14),
-                              fontWeight: FontWeight.w600),
-                          enabledBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(15),
-                              borderSide: BorderSide(color: appPrimaryColor)),
-                          focusedBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(15),
-                              borderSide: BorderSide(color: appPrimaryColor)),
-                        ),
+                        decoration: paybillTextField(),
                         onChanged: (value) {
                           setState(() {
                             _paybillNumber = value;
@@ -240,20 +206,7 @@ class _CheckboxRowState extends State<CheckboxRow> {
                       SizedBox(height: getScreenHeight(10)),
                       TextFormField(
                         enabled: !widget.pDetails == false ? true : false,
-                        decoration: InputDecoration(
-                          contentPadding: const EdgeInsets.only(
-                              top: 9, bottom: 9, left: 20),
-                          labelText: "Enter Account Number",
-                          labelStyle: TextStyle(
-                              fontSize: getScreenWidth(14),
-                              fontWeight: FontWeight.w600),
-                          enabledBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(15),
-                              borderSide: BorderSide(color: appPrimaryColor)),
-                          focusedBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(15),
-                              borderSide: BorderSide(color: appPrimaryColor)),
-                        ),
+                        decoration: accNoTextField(),
                         onChanged: (value) {
                           setState(() {
                             _accountNumber = value;
@@ -279,10 +232,10 @@ class _CheckboxRowState extends State<CheckboxRow> {
                                         fontSize: getScreenWidth(13.5),
                                         color: Colors.red)),
                               if (_accountNumber.isEmpty)
-                                Text("Account Number cannot be empty",
-                                    style: TextStyle(
-                                        fontSize: getScreenWidth(13.5),
-                                        color: Colors.red))
+                                Text(
+                                  "Account Number cannot be empty",
+                                  style: visibilityText(),
+                                )
                             ],
                           ),
                         ),
@@ -295,20 +248,7 @@ class _CheckboxRowState extends State<CheckboxRow> {
                     children: [
                       TextFormField(
                         enabled: !widget.pDetails == false ? true : false,
-                        decoration: InputDecoration(
-                          contentPadding: const EdgeInsets.only(
-                              top: 9, bottom: 9, left: 20),
-                          labelText: "Enter Till Number",
-                          labelStyle: TextStyle(
-                              fontSize: getScreenWidth(14),
-                              fontWeight: FontWeight.w600),
-                          enabledBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(15),
-                              borderSide: BorderSide(color: appPrimaryColor)),
-                          focusedBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(15),
-                              borderSide: BorderSide(color: appPrimaryColor)),
-                        ),
+                        decoration: tillNoTextField(),
                         keyboardType: TextInputType.number,
                         onChanged: (value) {
                           setState(() {
@@ -326,9 +266,7 @@ class _CheckboxRowState extends State<CheckboxRow> {
                         child: Visibility(
                           visible: _tillNumberInput.isEmpty,
                           child: Text("Till Number value cannot be empty",
-                              style: TextStyle(
-                                  fontSize: getScreenWidth(13.5),
-                                  color: Color.fromARGB(255, 255, 38, 23))),
+                              style: visibilityText()),
                         ),
                       ),
                     ],
@@ -346,10 +284,10 @@ class _CheckboxRowState extends State<CheckboxRow> {
             ),
             Visibility(
               visible: amount < 1,
-              child: Text("Amount to pay cannot be empty",
-                  style: TextStyle(
-                      fontSize: getScreenWidth(13.5),
-                      color: Color.fromARGB(255, 255, 38, 23))),
+              child: Text(
+                "Amount to pay cannot be empty",
+                style: visibilityText(),
+              ),
             ),
             SizedBox(height: getScreenHeight(15)),
             Padding(
@@ -357,23 +295,30 @@ class _CheckboxRowState extends State<CheckboxRow> {
               child: DefaultButton(
                   text: "Make Payment",
                   pressed: () {
-                    // if (hasError = true) {
-                    //   return;
-                    // } else {
                     //   //TODO Add navigation to payment successful
+
+                    // void _pay(BuildContext context) {
+                    final form = formKey3.currentState;
+                    if (form != null && form.validate()) {
+                      form.save();
+
+                      startCheckout(
+                        userPhone: _phoneNumber,
+                        amount: amount,
+                        isPaybill: _paybill,
+                        isTillNumber: _tillNumber,
+                      ).then((_) {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => HomeScreen(),
+                          ),
+                        );
+                      }).catchError((error) {
+                        print('Error: $error');
+                      });
+                    }
                     // }
-                    startTransaction(
-                      amount: amount,
-                      phoneNumber: _phoneNumber,
-                      isPaybill: _paybill,
-                      paybillNumber: _paybillNumber,
-                      tillNumber: _tillNumberInput,
-                      accountNumber: _accountNumber,
-                    );
-                    // Navigator.push(
-                    //     context,
-                    //     MaterialPageRoute(
-                    //         builder: (context) => PaymentSuccessful()));
                   }),
             ),
           ],

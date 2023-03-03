@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:project_x/src/services/auth_repository.dart';
 
@@ -39,10 +41,9 @@ class _SignUpFormState extends State<SignUpForm> {
     // final controller = Get.put(SignUpController());
 
     return Form(
-      autovalidateMode: AutovalidateMode.always,
-      key: formKey,
-      child: Column(
-        children: [
+        autovalidateMode: AutovalidateMode.always,
+        key: formKey,
+        child: Column(children: [
           SizedBox(height: getScreenHeight(30)),
           Padding(
             padding: EdgeInsets.symmetric(horizontal: getScreenWidth(10)),
@@ -125,21 +126,47 @@ class _SignUpFormState extends State<SignUpForm> {
             height: getScreenHeight(15),
           ),
           Padding(
-            padding: EdgeInsets.symmetric(horizontal: getScreenWidth(85)),
-            child: DefaultButton(
+              padding: EdgeInsets.symmetric(horizontal: getScreenWidth(85)),
+              child: DefaultButton(
                 text: "Sign Up",
-                pressed: () {
-                  // if (formKey.currentState!.validate()) {
-                  //   SignUpController.Instance.registerUser(
-                  //       _emailField.text.trim(), _passwordField.text.trim());
-                  // }
-                  AuthRepository.instance.createUserWithEmailAndPassword(
-                      _emailField.text.trim(), _passwordField.text.trim());
-                }),
-          ),
-        ],
-      ),
-    );
+                pressed: () async {
+                  try {
+                    // Create user account
+                    await AuthRepository.instance
+                        .createUserWithEmailAndPassword(
+                      _emailField.text.trim(),
+                      _passwordField.text.trim(),
+                    );
+
+                    // Authenticate user and get user object
+                    User? user = FirebaseAuth.instance.currentUser;
+                    if (user == null) {
+                      // handle error, user not found
+                      return;
+                    }
+
+                    // Add user details to Firestore
+                    String uid = user.uid;
+                    DocumentReference userRef =
+                        FirebaseFirestore.instance.collection('users').doc(uid);
+                    Map<String, dynamic> userData = {};
+                    if (!(await userRef.get()).exists) {
+                      // Create fields if they don't exist
+                      userData['name'] = '';
+                      userData['phone'] = '';
+                      await userRef.set(userData);
+                    }
+                    // Assign user input values to fields
+                    userData['name'] = _nameField.text.trim();
+                    userData['phone'] = _phoneNumberField.text.trim();
+                    await userRef.update(userData);
+                  } catch (e) {
+                    // handle errors and exceptions here
+                    print(e);
+                  }
+                },
+              ))
+        ]));
   }
 
   TextFormField emailFormField() {
@@ -157,7 +184,7 @@ class _SignUpFormState extends State<SignUpForm> {
       //   }
       //   return null;
       // },
-      onSaved: (newValue) => email = newValue!,
+      // onSaved: (newValue) => email = newValue!,
       decoration: InputDecoration(
         labelStyle: TextStyle(
             fontSize: getScreenWidth(18),
@@ -178,21 +205,22 @@ class _SignUpFormState extends State<SignUpForm> {
   }
 
   TextFormField nameFormField() {
+    bool _phoneNumberError = false;
     return TextFormField(
         controller: _nameField,
         keyboardType: TextInputType.name,
         textInputAction: TextInputAction.next,
         // validator: (value) {
         //   if (value!.isEmpty) {
-        //     return "Please enter a name";
+        //     // return "Please enter a name";
         //   }
         //   return null;
         // },
-        onSaved: (newValue) => name = newValue!,
+        // onSaved: (newValue) => name = newValue!,
         decoration: InputDecoration(
-          focusedErrorBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(15),
-              borderSide: const BorderSide(color: Colors.red)),
+          // focusedErrorBorder: OutlineInputBorder(
+          //     borderRadius: BorderRadius.circular(15),
+          //     borderSide: const BorderSide(color: Colors.red)),
           labelStyle: TextStyle(
               fontSize: getScreenWidth(18),
               color: appPrimaryColor,
@@ -202,13 +230,15 @@ class _SignUpFormState extends State<SignUpForm> {
           hintText: "Enter Your Name",
           enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(15),
-              borderSide: const BorderSide(color: appPrimaryColor)),
+              borderSide: BorderSide(
+                color: _phoneNumberError ? Colors.red : appPrimaryColor,
+              )),
           focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(15),
               borderSide: const BorderSide(color: appPrimaryColor)),
-          errorBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(15),
-              borderSide: const BorderSide(color: Colors.red)),
+          // errorBorder: OutlineInputBorder(
+          //     borderRadius: BorderRadius.circular(15),
+          //     borderSide: const BorderSide(color: Colors.red)),
           floatingLabelBehavior: FloatingLabelBehavior.always,
         ));
   }
@@ -216,9 +246,10 @@ class _SignUpFormState extends State<SignUpForm> {
   TextFormField phoneNumberFormField() {
     return TextFormField(
         controller: _phoneNumberField,
+        maxLength: 9,
         keyboardType: TextInputType.phone,
         textInputAction: TextInputAction.next,
-        onSaved: (newValue) => phoneNumber = newValue!,
+        // onSaved: (newValue) => phoneNumber = '254$newValue!',
         decoration: InputDecoration(
           labelStyle: TextStyle(
               fontSize: getScreenWidth(18),

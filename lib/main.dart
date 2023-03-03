@@ -8,7 +8,6 @@ import 'package:project_x/src/constants/theme.dart';
 import 'package:project_x/src/services/auth_repository.dart';
 import 'package:project_x/src/size_config/size_config.dart';
 
-import 'src/features/screens/sign_in_screen/sign_in.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {

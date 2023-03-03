@@ -7,7 +7,9 @@ import '../../../common_widgets/back_home_button.dart';
 import '../../../common_widgets/logout_button.dart';
 import '../../../constants/constants.dart';
 import '../../../size_config/size_config.dart';
+import 'components/change_password.dart';
 import 'components/user_details.dart';
+import 'components/user_profile.dart';
 
 class AccountScreen extends StatefulWidget {
   const AccountScreen({Key? key}) : super(key: key);
@@ -77,19 +79,19 @@ class _AccountScreenState extends State<AccountScreen> {
               SizedBox(height: getScreenHeight(50)),
               Column(
                 children: <Widget>[
-                  user_name(),
+                  UserProfile(),
                   const Divider(
                     thickness: 1,
                   ),
-                  user_email(),
+                  UserEmail(),
                   const Divider(
                     thickness: 1,
                   ),
-                  user_phone(),
+                  UserPhone(),
                   const Divider(
                     thickness: 1,
                   ),
-                  change_password(),
+                  ChangePassword(),
                   const Divider(
                     thickness: 1,
                   ),

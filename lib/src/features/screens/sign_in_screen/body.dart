@@ -64,7 +64,9 @@ class Body extends StatelessWidget {
                 child: SizedBox(
                   width: double.infinity,
                   child: OutlinedButton.icon(
-                      onPressed: null,
+                      onPressed: () {
+                        AuthRepository.instance.signInWithGoogle();
+                      },
                       icon: Image(
                         image: AssetImage("assets/images/google_logo.png"),
                         width: getScreenWidth(20),
