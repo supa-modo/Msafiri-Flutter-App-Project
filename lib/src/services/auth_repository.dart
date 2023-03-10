@@ -1,16 +1,18 @@
 import 'package:get/get.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:project_x/src/features/models/user_models.dart';
 import 'package:project_x/src/features/screens/home_screen/home_screen.dart';
 import 'package:project_x/src/features/screens/sign_in_screen/sign_in.dart';
 import 'package:project_x/src/services/exceptions/sign_up_exceptions.dart';
 
 import '../utils/show_snackbar.dart';
+import 'user_repository.dart';
 
 class AuthRepository extends GetxController {
   static AuthRepository get instance => Get.find();
 
-User? get currentUser => FirebaseAuth.instance.currentUser;
+  User? get currentUser => FirebaseAuth.instance.currentUser;
 
   final _auth = FirebaseAuth.instance;
   final _googleSignIn = GoogleSignIn();
@@ -98,4 +100,10 @@ User? get currentUser => FirebaseAuth.instance.currentUser;
   }
 
   Future<void> logout() async => await _auth.signOut();
+
+  final userRepo = Get.put(UserRepository());
+
+  Future<void> createUser(UserModel user2) async {
+    await userRepo.createUser(user2);
+  }
 }

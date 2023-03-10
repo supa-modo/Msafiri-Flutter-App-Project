@@ -1,14 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:qr_code_scanner/qr_code_scanner.dart';
 
 import '../../../constants/constants.dart';
 import '../../../size_config/size_config.dart';
 import 'payment_options.dart';
 
 import 'package:get/get.dart';
-
-import 'qr_screen.dart';
 
 class QRScanScreen1 extends StatefulWidget {
   const QRScanScreen1({super.key});
@@ -21,18 +18,6 @@ final _paymentDetailsController = TextEditingController();
 
 class _QRScanScreenState1 extends State<QRScanScreen1> {
   bool pDetails = true;
-  Barcode? scannedData;
-
-  Future<void> navigateToQrScanner() async {
-    Barcode? result = await Navigator.push<Barcode>(
-        context, MaterialPageRoute(builder: (context) => QrCodeScanScreen2()));
-
-    // Handle the scanned data once the child screen is closed and returned
-    setState(() {
-      scannedData =
-          (result ?? '') as Barcode?; // Update the scanned data variable
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -81,7 +66,7 @@ class _QRScanScreenState1 extends State<QRScanScreen1> {
                           child: Column(
                             children: [
                               TextButton(
-                                onPressed: navigateToQrScanner,
+                                onPressed: () {},
                                 child: Column(
                                   children: [
                                     Icon(
@@ -126,12 +111,8 @@ class _QRScanScreenState1 extends State<QRScanScreen1> {
                             horizontal: getScreenWidth(20),
                             vertical: getScreenHeight(15),
                           ),
-                          child: scannedData != null
-                              ? Text(
-                                  'Scanned Data: ${scannedData!.code}',
-                                  style: TextStyle(fontSize: 12),
-                                )
-                              : Container(), // Replace with any other widget you want to show when scannedData is null
+                          child: Text('Data will be shown here'),
+                          // Replace with any other widget you want to show when scannedData is null
                         )),
                     SizedBox(height: getScreenHeight(5)),
                     Text(

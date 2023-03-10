@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:project_x/src/features/models/user_models.dart';
 import 'package:project_x/src/services/auth_repository.dart';
 
 import '../../../common_widgets/defaultButton.dart';
@@ -145,27 +147,20 @@ class _SignUpFormState extends State<SignUpForm> {
                       return;
                     }
 
-                    // Add user details to Firestore
-                    String uid = user.uid;
-                    DocumentReference userRef =
-                        FirebaseFirestore.instance.collection('users').doc(uid);
-                    Map<String, dynamic> userData = {};
-                    if (!(await userRef.get()).exists) {
-                      // Create fields if they don't exist
-                      userData['name'] = '';
-                      userData['phone'] = '';
-                      await userRef.set(userData);
-                    }
-                    // Assign user input values to fields
-                    userData['name'] = _nameField.text.trim();
-                    userData['phone'] = _phoneNumberField.text.trim();
-                    await userRef.update(userData);
-                  } catch (e) {
-                    // handle errors and exceptions here
-                    print(e);
+                    final String userType =
+                        _isOperator ? 'operator' : 'passenger';
+
+                    // Create fields in Firestore database if they don't exist
+                    final user2 = UserModel(
+                        fullName: _nameField.text.trim(),
+                        phoneNumber: '254${_phoneNumberField.text.trim()}',
+                        isOperator: userType);
+                    AuthRepository.instance.createUser(user2);
+                  } catch (error) {
+                    print(error);
                   }
                 },
-              ))
+              )),
         ]));
   }
 
@@ -236,9 +231,7 @@ class _SignUpFormState extends State<SignUpForm> {
           focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(15),
               borderSide: const BorderSide(color: appPrimaryColor)),
-          // errorBorder: OutlineInputBorder(
-          //     borderRadius: BorderRadius.circular(15),
-          //     borderSide: const BorderSide(color: Colors.red)),
+
           floatingLabelBehavior: FloatingLabelBehavior.always,
         ));
   }
@@ -246,26 +239,31 @@ class _SignUpFormState extends State<SignUpForm> {
   TextFormField phoneNumberFormField() {
     return TextFormField(
         controller: _phoneNumberField,
-        maxLength: 9,
-        keyboardType: TextInputType.phone,
-        textInputAction: TextInputAction.next,
-        // onSaved: (newValue) => phoneNumber = '254$newValue!',
+        style: TextStyle(fontSize: getScreenWidth(15)),
         decoration: InputDecoration(
+          prefixText: '254',
+          contentPadding: const EdgeInsets.only(top: 9, bottom: 9, left: 20),
+          labelText: "Phone Number",
+          hintText: 'Enter Your Phone Number',
+          hintStyle: TextStyle(fontSize: getScreenWidth(13)),
           labelStyle: TextStyle(
               fontSize: getScreenWidth(18),
               color: appPrimaryColor,
               fontWeight: FontWeight.bold),
-          hintStyle: TextStyle(fontSize: getScreenWidth(13)),
-          labelText: "Phone Number",
-          hintText: "Enter Your Phone Number",
+          floatingLabelBehavior: FloatingLabelBehavior.always,
           enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(15),
-              borderSide: const BorderSide(color: appPrimaryColor)),
+              borderSide: BorderSide(color: appPrimaryColor)),
           focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(15),
-              borderSide: const BorderSide(color: appPrimaryColor)),
-          floatingLabelBehavior: FloatingLabelBehavior.always,
-        ));
+              borderSide: BorderSide(color: appPrimaryColor)),
+        ),
+        keyboardType: TextInputType.phone,
+        textInputAction: TextInputAction.next,
+        inputFormatters: [
+          FilteringTextInputFormatter.digitsOnly,
+          LengthLimitingTextInputFormatter(9),
+        ]);
   }
 
   TextFormField passwordFormField() {

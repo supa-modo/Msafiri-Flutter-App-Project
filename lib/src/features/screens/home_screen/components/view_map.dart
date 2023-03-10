@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 import '../../../../constants/constants.dart';
 import '../../../../size_config/size_config.dart';
+import '../../Map Screen/mapScreen2.dart';
 
 class view_map extends StatelessWidget {
   const view_map({
@@ -12,10 +14,8 @@ class view_map extends StatelessWidget {
   Widget build(BuildContext context) {
     return TextButton(
       onPressed: () {
-        // Navigator.push(
-        //     context,
-        //     MaterialPageRoute(
-        //         builder: (context) => const MapScreen3()));
+        Get.to(() => MapScreen());
+        // Get.to(() => Home());
       },
       child: Column(
         children: [

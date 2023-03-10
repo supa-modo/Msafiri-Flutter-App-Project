@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:project_x/src/features/screens/account_details_screen/components/usertype.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -57,26 +58,36 @@ class _AccountScreenState extends State<AccountScreen> {
                 child: Stack(
                   children: <Widget>[
                     CircleAvatar(
-                      radius: getScreenWidth(70),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          borderRadius:
+                              BorderRadius.circular(getScreenWidth(80)),
+                          image: DecorationImage(
+                            image: AssetImage("assets/images/accDetails.jpg"),
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                      ),
+                      radius: getScreenWidth(65),
                       backgroundColor: const Color.fromARGB(255, 204, 203, 203),
                     ),
                     Positioned(
                       bottom: 0,
                       right: 0,
-                      left: getScreenWidth(90),
+                      left: getScreenWidth(85),
                       top: getScreenHeight(85),
                       child: TextButton(
                           onPressed: () {},
                           child: Icon(
                             Icons.camera_alt,
-                            color: appPrimaryColor,
-                            size: getScreenWidth(44),
+                            color: Color.fromARGB(255, 14, 101, 145),
+                            size: getScreenWidth(40),
                           )),
                     )
                   ],
                 ),
               ),
-              SizedBox(height: getScreenHeight(50)),
+              SizedBox(height: getScreenHeight(30)),
               Column(
                 children: <Widget>[
                   UserProfile(),
@@ -88,6 +99,10 @@ class _AccountScreenState extends State<AccountScreen> {
                     thickness: 1,
                   ),
                   UserPhone(),
+                  const Divider(
+                    thickness: 1,
+                  ),
+                  UserTypeSelection(),
                   const Divider(
                     thickness: 1,
                   ),
@@ -134,9 +149,9 @@ class _AccountScreenState extends State<AccountScreen> {
                       ],
                     ),
                   ),
-                  SizedBox(height: getScreenHeight(30)),
+                  SizedBox(height: getScreenHeight(20)),
                   logout_button(),
-                  SizedBox(height: getScreenHeight(30)),
+                  SizedBox(height: getScreenHeight(15)),
                   back_home_button(),
                 ],
               ),

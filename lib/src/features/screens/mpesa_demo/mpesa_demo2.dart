@@ -1,10 +1,10 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:mpesa_flutter_plugin/mpesa_flutter_plugin.dart';
+import 'package:project_x/src/common_widgets/defaultButton.dart';
+import 'package:project_x/src/features/screens/mpesa_demo/qrdemo3.dart';
 
 import '../../../constants/constants.dart';
 import '../../../size_config/size_config.dart';
-import 'hhtp.dart';
 
 class MpesaTransaction extends StatefulWidget {
   const MpesaTransaction({super.key});
@@ -19,9 +19,6 @@ class _MpesaTransactionState extends State<MpesaTransaction> {
   String partyB = '174379';
 
   final _formKey = GlobalKey<FormState>();
-  // final TextEditingController _phoneNumberField = TextEditingController();
-  // final TextEditingController _amountField = TextEditingController();
-
   Future<void> startCheckout(
       {required String userPhone, required double amount}) async {
     //Preferably expect 'dynamic', response type varies a lot!
@@ -51,142 +48,99 @@ class _MpesaTransactionState extends State<MpesaTransaction> {
     }
   }
 
-  Future<dynamic> startTransaction(
-      {required double amount, required String phoneNumber}) async {
-    dynamic transactionInitialization;
-    try {
-      transactionInitialization =
-          await MpesaFlutterPlugin.initializeMpesaSTKPush(
-        businessShortCode: '174379',
-        transactionType: TransactionType
-            .CustomerPayBillOnline, //or CustomerBuyGoodsOnline for till numbers
-        partyA: phoneNumber,
-        partyB: '174379',
-        callBackURL: Uri(
-            scheme: 'https',
-            host:
-                'us-central1-pts-project-x2.cloudfunctions.net/mpesaCallback'),
-        accountReference: 'Mpesa Demo',
-        phoneNumber: phoneNumber,
-        baseUri: Uri(scheme: "https", host: "sandbox.safaricom.co.ke"),
-        // transactionDesc: 'Mpesa demo',
-        passKey:
-            'bfb279f9aa9bdbcf158e97dd71a467cd2e0c893059b10f78e6b72ada1ed2c919',
-        amount: amount,
-      );
-
-      FirebaseFirestore.instance.collection(partyB).add({
-        'amount': amount,
-        'phoneNumber': phoneNumber,
-        'transactionDetails': transactionInitialization
-      });
-
-      QuerySnapshot querySnapshot =
-          await FirebaseFirestore.instance.collection(partyB).get();
-      List<DocumentSnapshot> documents = querySnapshot.docs;
-      documents.forEach((document) {
-        print('Transaction Details: ${document.data()}');
-      });
-
-      // if (result.success) {
-      //   print('STK Push successful');
-      //   // do something if success, like showing a success message
-      // } else {
-      //   print('STK Push failed');
-      //   // show an error message
-      // }
-    } catch (e) {
-      print('Error: $e');
-      // show an error message
-    }
-  }
-
-  // @override
-  // void dispose() {
-  //   super.dispose();
-  //   _phoneNumberField.dispose();
-  //   _amountField.dispose();
-  // }
-
   @override
   Widget build(BuildContext context) {
     SizeConfig.init(context);
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Make Payment'),
+        title: Text('Admin Demos'),
       ),
-      body: Center(
-        child: Form(
-          key: _formKey,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Text(
-                "Mpesa Demo Trials",
-                style: headingStyle,
+      body: Form(
+        key: _formKey,
+        child: Column(
+          children: <Widget>[
+            Text(
+              "Mpesa Demo Trials",
+              style: headingStyle,
+            ),
+            Container(
+              height: getScreenHeight(30),
+              width: getScreenWidth(300),
+              color: Colors.orange,
+            ),
+            SizedBox(height: 15),
+            TextFormField(
+              // controller: _phoneNumberField,
+              decoration: InputDecoration(
+                prefixText: '254',
+                contentPadding:
+                    const EdgeInsets.only(top: 9, bottom: 9, left: 20),
+                labelText: "Enter Your Mpesa Number",
+                labelStyle:
+                    const TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
+                enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(15),
+                    borderSide: BorderSide(color: appPrimaryColor)),
+                focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(15),
+                    borderSide: BorderSide(color: appPrimaryColor)),
               ),
-              Container(
-                height: getScreenHeight(115),
-                width: getScreenWidth(300),
-                color: Colors.orange,
+              keyboardType: TextInputType.number,
+              maxLength: 9,
+              onChanged: (value) {
+                setState(() {
+                  _mpesaNumber = '254$value';
+                });
+              },
+            ),
+            TextFormField(
+              // controller: _amountField,
+              decoration: InputDecoration(
+                contentPadding:
+                    const EdgeInsets.only(top: 9, bottom: 9, left: 20),
+                labelText: "Enter Amount",
+                labelStyle:
+                    const TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
+                enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(15),
+                    borderSide: BorderSide(color: appPrimaryColor)),
+                focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(15),
+                    borderSide: BorderSide(color: appPrimaryColor)),
               ),
-              SizedBox(height: 15),
-              TextFormField(
-                // controller: _phoneNumberField,
-                decoration: InputDecoration(
-                  prefixText: '254',
-                  contentPadding:
-                      const EdgeInsets.only(top: 9, bottom: 9, left: 20),
-                  labelText: "Enter Your Mpesa Number",
-                  labelStyle: const TextStyle(
-                      fontSize: 14, fontWeight: FontWeight.w600),
-                  enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(15),
-                      borderSide: BorderSide(color: appPrimaryColor)),
-                  focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(15),
-                      borderSide: BorderSide(color: appPrimaryColor)),
-                ),
-                keyboardType: TextInputType.number,
-                maxLength: 9,
-                onChanged: (value) {
-                  setState(() {
-                    _mpesaNumber = '254$value';
-                  });
-                },
-              ),
-              SizedBox(height: 10),
-              TextFormField(
-                // controller: _amountField,
-                decoration: InputDecoration(
-                  contentPadding:
-                      const EdgeInsets.only(top: 9, bottom: 9, left: 20),
-                  labelText: "Enter Amount",
-                  labelStyle: const TextStyle(
-                      fontSize: 14, fontWeight: FontWeight.w600),
-                  enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(15),
-                      borderSide: BorderSide(color: appPrimaryColor)),
-                  focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(15),
-                      borderSide: BorderSide(color: appPrimaryColor)),
-                ),
-                keyboardType: TextInputType.number,
-                onChanged: (value) {
-                  setState(() {
-                    _amount = double.parse(value);
-                  });
-                },
-              ),
-              TextButton(
-                onPressed: () async {
-                  // startTransaction(amount: 1, phoneNumber: '254790193402');
-                  startCheckout(userPhone: _mpesaNumber, amount: _amount);
-                },
-                child: const Text('Make Payment'),
-              ),
-            ],
-          ),
+              keyboardType: TextInputType.number,
+              onChanged: (value) {
+                setState(() {
+                  _amount = double.parse(value);
+                });
+              },
+            ),
+            Padding(
+              padding: EdgeInsets.symmetric(
+                  vertical: getScreenHeight(10),
+                  horizontal: getScreenWidth(20)),
+              child: DefaultButton(
+                  text: "Make Payment",
+                  pressed: () async {
+                    startCheckout(userPhone: _mpesaNumber, amount: _amount);
+                  }),
+            ),
+            Padding(
+              padding: EdgeInsets.symmetric(
+                  vertical: getScreenHeight(10),
+                  horizontal: getScreenWidth(20)),
+              child: DefaultButton(
+                  text: "Qr Scan Demo",
+                  pressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => MyApp(),
+                      ),
+                    );
+                  }),
+            ),
+          ],
         ),
       ),
     );

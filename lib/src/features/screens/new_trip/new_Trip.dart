@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:project_x/src/features/screens/new_trip/place_autocompl.dart';
 
 import '../../../common_widgets/defaultButton.dart';
 import '../../../constants/constants.dart';
 import '../../../size_config/size_config.dart';
+import '../Map Screen/mapScreen2.dart';
 
 class SearchLocationScreen extends StatefulWidget {
   const SearchLocationScreen({Key? key, this.pressed}) : super(key: key);
@@ -18,19 +18,6 @@ class _SearchLocationScreenState extends State<SearchLocationScreen> {
   bool mPesa = true;
   bool cash = false;
   late String _mpesaNumber;
-
-  // void placesAutocomplete(String query) async {
-  //   Uri uri = Uri.https(
-  //       "maps.googleapis.com",
-  //       'maps/api/place/autocomplete/json',
-  //       {"input": query, "key": googleApiKey});
-
-  //   String? response = await NetworkUtils.fetchUrl(uri);
-
-  //   if (response != null) {
-  //     print(response);
-  //   }
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -66,67 +53,7 @@ class _SearchLocationScreenState extends State<SearchLocationScreen> {
                 fontWeight: FontWeight.bold,
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.all(5.0),
-              child: Container(
-                height: getScreenHeight(220),
-                width: getScreenWidth(375),
-                decoration: const BoxDecoration(
-                    color: Color.fromARGB(255, 211, 210, 210)),
-                // child: const MapScreen3(),
-              ),
-            ),
-            // LocationSearch(),
-            // Form(
-            //   child: Padding(
-            //     padding: EdgeInsets.only(
-            //         left: getScreenWidth(16),
-            //         right: getScreenWidth(16),
-            //         bottom: getScreenHeight(10)),
-            //     child: TextFormField(
-            //       onChanged: (value) {
-            //         // placesAutocomplete(value);
-            //       },
-            //       textInputAction: TextInputAction.search,
-            //       decoration: InputDecoration(
-            //         hintText: "Search your destination location",
-            //         hintStyle: TextStyle(fontSize: getScreenWidth(15)),
-            //       ),
-            //     ),
-            //   ),
-            // ),
-            // const Divider(
-            //   height: 5,
-            //   thickness: 2,
-            //   color: Color.fromARGB(160, 228, 226, 226),
-            // ),
-            // Padding(
-            //   padding: EdgeInsets.symmetric(
-            //       vertical: getScreenHeight(5), horizontal: getScreenWidth(8)),
-            //   child: SingleChildScrollView(
-            //     scrollDirection: Axis.horizontal,
-            //     child: Row(
-            //       children: [
-            //         commonLocations("KFA"),
-            //         commonLocations("Rafiki"),
-            //         commonLocations("Kabu Main Gate"),
-            //         commonLocations("Kiamunyi"),
-            //         commonLocations("Kampi Ya Moto"),
-            //         commonLocations("Mercy Njeri"),
-            //         commonLocations("Barkesen"),
-            //       ],
-            //     ),
-            //   ),
-            // ),
-            // const Divider(
-            //   height: 4,
-            //   thickness: 2,
-            //   color: Color.fromARGB(160, 228, 226, 226),
-            // ),
-            // LocationListTile(
-            //   press: () {},
-            //   location: "Kabarak, Nakuru, Kenya",
-            // ),
+            SearchScreen(),
             Container(),
             SizedBox(height: getScreenHeight(20)),
             Text(
@@ -265,32 +192,6 @@ class _SearchLocationScreenState extends State<SearchLocationScreen> {
                 : Container(),
           ],
         ),
-      ),
-    );
-  }
-
-  Container commonLocations(text) {
-    return Container(
-      padding: EdgeInsets.symmetric(horizontal: getScreenWidth(4)),
-      child: ElevatedButton(
-        onPressed: () {
-          // placesAutocomplete("Dubai");
-        },
-        style: ElevatedButton.styleFrom(
-          padding: EdgeInsets.symmetric(horizontal: getScreenWidth(10)),
-          backgroundColor: Color.fromARGB(160, 228, 226, 226),
-          foregroundColor: Theme.of(context).brightness == Brightness.dark
-              ? Colors.white
-              : appPrimaryColor,
-          elevation: 0,
-          fixedSize: Size(double.infinity, getScreenWidth(40)),
-          shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(Radius.circular(10)),
-          ),
-        ),
-        child: Text(text,
-            style: TextStyle(
-                fontSize: getScreenWidth(12), fontWeight: FontWeight.w600)),
       ),
     );
   }

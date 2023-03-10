@@ -5,118 +5,100 @@ import 'package:flutter/material.dart';
 import '../../../../size_config/size_config.dart';
 import 'edit_text.dart';
 
-class UserProfile extends StatefulWidget {
+class UserProfile extends StatelessWidget {
   const UserProfile({
     Key? key,
   }) : super(key: key);
 
   @override
-  _UserProfileState createState() => _UserProfileState();
-}
-
-class _UserProfileState extends State<UserProfile> {
-  String userName = 'Not available';
-
-  @override
-  void initState() {
-    super.initState();
+  Widget build(BuildContext context) {
     User? user = FirebaseAuth.instance.currentUser;
-    userName = user?.displayName ?? 'Not available';
-  }
-
-  void updateUserName(String newName) {
-    setState(() {
-      userName = newName;
-    });
-  }
-
-  void _showUpdateUserNameDialog() {
-    User? user = FirebaseAuth.instance.currentUser;
-    String updatedName = userName;
-    showDialog(
-      context: context,
-      builder: (context) {
-        return UpdateUserNameDialog(
-          initialName: userName,
-          onUpdate: (newName) {
-            updatedName = newName;
-            FirebaseAuth.instance.currentUser?.updateDisplayName(updatedName);
-            FirebaseFirestore.instance.collection('users').doc(user?.uid).set({
-              'name': updatedName,
-            });
-            updateUserName(updatedName);
-          },
+    return StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
+      stream: FirebaseFirestore.instance
+          .collection('users')
+          .doc(user?.uid)
+          .snapshots(),
+      initialData: null,
+      builder: (BuildContext context,
+          AsyncSnapshot<DocumentSnapshot<Map<String, dynamic>>> snapshot) {
+        if (snapshot.hasError) {
+          return Text('Error: ${snapshot.error}');
+        }
+        if (!snapshot.hasData) {
+          return CircularProgressIndicator();
+        }
+        final userData = snapshot.data!.data();
+        String userName = userData != null && userData.containsKey('fullName')
+            ? userData['fullName']
+            : 'Not available';
+        return Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Row(
+              children: [
+                Icon(
+                  size: getScreenWidth(25),
+                  Icons.person,
+                  color: Colors.grey,
+                ),
+                SizedBox(width: getScreenWidth(10)),
+                Text(userName,
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: getScreenWidth(14),
+                        color: const Color.fromARGB(255, 80, 79, 79))),
+              ],
+            ),
+            TextButton.icon(
+              icon: Icon(Icons.edit, size: getScreenWidth(18)),
+              label: edit_text(),
+              onPressed: () {
+                showDialog(
+                  context: context,
+                  builder: (context) {
+                    return UpdateUserNameDialog(userName: userName);
+                  },
+                );
+              },
+            ),
+          ],
         );
       },
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Row(
-          children: [
-            Icon(
-              size: getScreenWidth(25),
-              Icons.person,
-              color: Colors.grey,
-            ),
-            SizedBox(width: getScreenWidth(10)),
-            Text(userName,
-                style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: getScreenWidth(14),
-                    color: const Color.fromARGB(255, 80, 79, 79))),
-          ],
-        ),
-        TextButton.icon(
-          icon: Icon(Icons.edit, size: getScreenWidth(18)),
-          label: edit_text(),
-          onPressed: _showUpdateUserNameDialog,
-        ),
-      ],
     );
   }
 }
 
 class UpdateUserNameDialog extends StatefulWidget {
-  final String initialName;
-  final Function(String) onUpdate;
+  final String userName;
 
-  const UpdateUserNameDialog({
-    Key? key,
-    required this.initialName,
-    required this.onUpdate,
-  }) : super(key: key);
+  const UpdateUserNameDialog({Key? key, required this.userName})
+      : super(key: key);
 
   @override
   _UpdateUserNameDialogState createState() => _UpdateUserNameDialogState();
 }
 
 class _UpdateUserNameDialogState extends State<UpdateUserNameDialog> {
-  late TextEditingController _nameController;
+  late String updatedUserName;
 
   @override
   void initState() {
     super.initState();
-    _nameController = TextEditingController(text: widget.initialName);
-  }
-
-  @override
-  void dispose() {
-    _nameController.dispose();
-    super.dispose();
+    updatedUserName = widget.userName;
   }
 
   @override
   Widget build(BuildContext context) {
+    User? user = FirebaseAuth.instance.currentUser;
     return AlertDialog(
       title: Text('Enter your new name'),
       content: TextField(
-        controller: _nameController,
-        decoration: InputDecoration(hintText: widget.initialName),
+        decoration: InputDecoration(hintText: widget.userName),
+        onChanged: (value) {
+          setState(() {
+            updatedUserName = value;
+          });
+        },
       ),
       actions: <Widget>[
         TextButton(
@@ -127,11 +109,18 @@ class _UpdateUserNameDialogState extends State<UpdateUserNameDialog> {
         ),
         TextButton(
           child: Text('Save'),
-          onPressed: () {
-            widget.onUpdate(_nameController.text);
+          onPressed: () async {
+            await FirebaseFirestore.instance
+                .collection('users')
+                .doc(user?.uid)
+                .update(
+              {
+                'fullName': updatedUserName,
+              },
+            );
             Navigator.of(context).pop();
           },
-        ),
+        )
       ],
     );
   }

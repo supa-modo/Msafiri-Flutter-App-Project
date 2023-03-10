@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:project_x/src/features/screens/mpesa_demo/hhtp.dart';
-import 'package:project_x/src/features/screens/mpesa_demo/mpesa_demo.dart';
 import 'package:project_x/src/features/screens/mpesa_demo/mpesa_demo2.dart';
-import 'package:project_x/src/features/screens/new_trip/place_autocompl.dart';
 
 import '../../../../constants/constants.dart';
 import '../../../../size_config/size_config.dart';
@@ -17,10 +14,7 @@ class mpesa_demo extends StatelessWidget {
   Widget build(BuildContext context) {
     return TextButton(
       onPressed: () {
-        Get.to(() =>
-            // PaymentScreen2()
-            // MpesaTransaction());
-            MyHomePage());
+        Get.to(() => MpesaTransaction());
       },
       child: Column(
         children: [
@@ -31,7 +25,7 @@ class mpesa_demo extends StatelessWidget {
               image: DecorationImage(
                   fit: BoxFit.cover,
                   opacity: 1.0,
-                  image: AssetImage("assets/images/12.png")),
+                  image: AssetImage("assets/images/admin1.png")),
               color: appPrimaryColor,
               borderRadius: BorderRadius.only(
                   topLeft: Radius.circular(15), topRight: Radius.circular(15)),
@@ -50,7 +44,7 @@ class mpesa_demo extends StatelessWidget {
               children: [
                 Padding(
                   padding: EdgeInsets.only(left: getScreenWidth(5)),
-                  child: Text("My Account",
+                  child: Text("Admin Shit",
                       style: TextStyle(
                           fontSize: getScreenWidth(19),
                           fontWeight: FontWeight.w900,

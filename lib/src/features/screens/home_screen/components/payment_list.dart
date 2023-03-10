@@ -1,6 +1,9 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:project_x/src/features/screens/payments_list/payments_list.dart';
+import 'package:project_x/src/utils/show_snackbar.dart';
 
 import '../../../../constants/constants.dart';
 import '../../../../size_config/size_config.dart';
@@ -12,9 +15,27 @@ class payment_list extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    User? user = FirebaseAuth.instance.currentUser;
     return TextButton(
-      onPressed: () {
-        Get.to(() => PaymentsListScreen());
+      onPressed: () async {
+        User? user = FirebaseAuth.instance.currentUser;
+        DocumentSnapshot<Map<String, dynamic>> snapshot =
+            await FirebaseFirestore.instance
+                .collection('users')
+                .doc(user?.uid)
+                .get();
+        String userType = snapshot.data()?['UserType'] ?? 'not set';
+        if (userType == 'operator') {
+          Get.to(() => PaymentsListScreen());
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content:
+                  Text('You must be an operator to view the payment list.'),
+              backgroundColor: Colors.red,
+            ),
+          );
+        }
       },
       child: Column(
         children: [

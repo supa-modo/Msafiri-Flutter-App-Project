@@ -64,12 +64,12 @@ class Body extends StatelessWidget {
                   child: OutlinedButton.icon(
                       onPressed: null,
                       icon: Image(
-                        image: AssetImage("assets/images/twittw.png"),
-                        width: getScreenWidth(22),
-                        height: getScreenHeight(22),
+                        image: AssetImage("assets/images/Facebook-logo.png"),
+                        width: getScreenWidth(35),
+                        height: getScreenHeight(35),
                       ),
                       label: Text(
-                        "Sign Up with Twitter",
+                        "Sign Up with Facebook",
                         style: TextStyle(
                             color: Color.fromARGB(255, 150, 148, 148)),
                       )),
