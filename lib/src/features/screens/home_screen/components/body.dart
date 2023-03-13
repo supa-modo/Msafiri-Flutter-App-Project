@@ -35,7 +35,10 @@ List<Map<String, String>> carouselItems = [
     'imagePath': "assets/images/transactions.png",
     'text': "Still in development"
   },
-  {'imagePath': "assets/images/invoice.jpg", 'text': "Still in development"},
+  {
+    'imagePath': "assets/images/invoice.jpg",
+    'text': "Monitor real-time payments made to your account"
+  },
 ];
 
 class _BodyState extends State<Body> {
@@ -71,15 +74,14 @@ class _BodyState extends State<Body> {
                               borderRadius: BorderRadius.circular(20),
                             )),
                         Positioned(
-                          bottom: getScreenHeight(30),
+                          bottom: getScreenHeight(25),
                           left: getScreenWidth(10),
                           child: SizedBox(
                             width: getScreenWidth(200),
                             child: Text(item['text']!,
                                 softWrap: true,
                                 style: TextStyle(
-                                    color:
-                                        const Color.fromARGB(199, 17, 31, 37),
+                                    color: Color.fromARGB(225, 12, 25, 31),
                                     fontSize: getScreenWidth(23),
                                     fontWeight: FontWeight.w900)),
                           ),

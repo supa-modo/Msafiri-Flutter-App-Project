@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 
 import '../../../constants/constants.dart';
 import '../../../size_config/size_config.dart';
+import 'components/qrScanScreen.dart';
 import 'payment_options.dart';
 
 import 'package:get/get.dart';
@@ -18,6 +19,20 @@ final _paymentDetailsController = TextEditingController();
 
 class _QRScanScreenState1 extends State<QRScanScreen1> {
   bool pDetails = true;
+  String? _scannedText;
+
+  void _onScanQRCodePressed() async {
+    final result = await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => QRCodeScannerScreen(),
+      ),
+    );
+
+    setState(() {
+      _scannedText = result;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -66,7 +81,7 @@ class _QRScanScreenState1 extends State<QRScanScreen1> {
                           child: Column(
                             children: [
                               TextButton(
-                                onPressed: () {},
+                                onPressed: _onScanQRCodePressed,
                                 child: Column(
                                   children: [
                                     Icon(
@@ -96,6 +111,7 @@ class _QRScanScreenState1 extends State<QRScanScreen1> {
                     Text(
                       "Payment Details Captured",
                       style: TextStyle(
+                          color: appPrimaryColor,
                           fontWeight: FontWeight.bold,
                           fontSize: getScreenWidth(14)),
                     ),
@@ -109,10 +125,16 @@ class _QRScanScreenState1 extends State<QRScanScreen1> {
                         child: Padding(
                           padding: EdgeInsets.symmetric(
                             horizontal: getScreenWidth(20),
-                            vertical: getScreenHeight(15),
+                            vertical: getScreenHeight(17),
                           ),
-                          child: Text('Data will be shown here'),
-                          // Replace with any other widget you want to show when scannedData is null
+                          child: Text(
+                            _scannedText ??
+                                'Scanned Payment Details will appear here',
+                            style: TextStyle(
+                                fontSize: getScreenWidth(17),
+                                fontWeight: FontWeight.bold,
+                                color: Color.fromARGB(255, 52, 136, 54)),
+                          ),
                         )),
                     SizedBox(height: getScreenHeight(5)),
                     Text(

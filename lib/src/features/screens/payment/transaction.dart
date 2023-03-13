@@ -25,8 +25,8 @@ Future<dynamic> startTransaction(
       transactionType: transactionType,
       partyA: phoneNumber,
       partyB: partyB,
-      callBackURL:
-          Uri(scheme: "https", host: "1234.1234.co.ke", path: "/1234.php"),
+      callBackURL: Uri.parse(
+          'https://us-central1-pts-project-x2.cloudfunctions.net/saveMpesaTransaction'),
       accountReference: accountNumber,
       phoneNumber: phoneNumber,
       baseUri: Uri(scheme: "https", host: "sandbox.safaricom.co.ke"),

@@ -122,7 +122,7 @@ class _AccountScreenState extends State<AccountScreen> {
                         Row(
                           children: [
                             Icon(
-                              Icons.light_mode,
+                              Icons.dark_mode,
                               size: getScreenWidth(28),
                             ),
                             SizedBox(width: getScreenWidth(20)),

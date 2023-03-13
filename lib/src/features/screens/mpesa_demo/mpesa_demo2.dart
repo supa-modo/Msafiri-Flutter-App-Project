@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:mpesa_flutter_plugin/mpesa_flutter_plugin.dart';
 import 'package:project_x/src/common_widgets/defaultButton.dart';
-import 'package:project_x/src/features/screens/mpesa_demo/qrdemo3.dart';
 
 import '../../../constants/constants.dart';
 import '../../../size_config/size_config.dart';
+import 'qrdemo.dart';
+import 'qrdemo4.dart';
+import 'scanqr.dart';
 
 class MpesaTransaction extends StatefulWidget {
   const MpesaTransaction({super.key});
@@ -21,7 +23,6 @@ class _MpesaTransactionState extends State<MpesaTransaction> {
   final _formKey = GlobalKey<FormState>();
   Future<void> startCheckout(
       {required String userPhone, required double amount}) async {
-    //Preferably expect 'dynamic', response type varies a lot!
     dynamic transactionInitialisation;
 
     try {
@@ -31,8 +32,8 @@ class _MpesaTransactionState extends State<MpesaTransaction> {
           amount: amount,
           partyA: userPhone,
           partyB: partyB,
-          callBackURL:
-              Uri(scheme: "https", host: "1234.1234.co.ke", path: "/1234.php"),
+          callBackURL: Uri.parse(
+              'https://us-central1-pts-project-x2.cloudfunctions.net/mpesaCallback'),
           accountReference: "shoe",
           phoneNumber: userPhone,
           baseUri: Uri(scheme: "https", host: "sandbox.safaricom.co.ke"),
@@ -135,7 +136,8 @@ class _MpesaTransactionState extends State<MpesaTransaction> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => MyApp(),
+                        builder: (context) => QRCodeScannerScreen3(),
+                        // builder: (context) => QRCodeScannerScreen1(),
                       ),
                     );
                   }),
