@@ -1,35 +1,28 @@
 const functions = require("firebase-functions");
 const admin = require("firebase-admin");
-
 admin.initializeApp();
-
-const firestore = admin.firestore();
+const db = admin.firestore();
 
 exports.mpesaCallback = functions.https.onRequest(async (req, res) => {
-  const transactionDetailss = req.body.Body.stkCallback;
-  console.log("Received payload data", transactionDetailss);
-  const responseCode = transactionDetailss.ResultCode;
-  const checkOutRequestID = transactionDetailss.CheckoutRequestID;
+  const callbackMetadata = req.body;
+  const responseCode = callbackMetadata.Body.stkCallback.ResultCode;
+  const checkoutRequestId = callbackMetadata.Body.stkCallback.CheckoutRequestID;
 
   if (responseCode === 0) {
-    const transactionDetails = transactionDetailss.CallbackMetadata.Item;
-    console.log("Payment details: ", transactionDetails);
-
-    var transCode;
-    var phonePaidFrom;
-    var amount;
-    var transactionDate;
+    const transactionDetails =
+      callbackMetadata.Body.stkCallback.CallbackMetadata.Item;
+    var transactionDate, phoneNumber, amount, mpesaReceiptNumber;
 
     await transactionDetails.forEach((entry) => {
       switch (entry.Name) {
         case "MpesaReceiptNumber":
-          transCode = entry.Value;
-          break;
-        case "PhoneNumber":
-          phonePaidFrom = entry.Value;
+          mpesaReceiptNumber = entry.Value;
           break;
         case "Amount":
           amount = entry.Value;
+          break;
+        case "PhoneNumber":
+          phoneNumber = entry.Value;
           break;
         case "TransactionDate":
           transactionDate = entry.Value;
@@ -38,23 +31,34 @@ exports.mpesaCallback = functions.https.onRequest(async (req, res) => {
           break;
       }
     });
-     
-    const entryDetails = {
-        
+
+    const transactionDet = {
+      transactionDate: transactionDate,
+      phoneNumber: phoneNumber,
+      amount: amount,
+      mpesaReceiptNumber: mpesaReceiptNumber,
+    };
+
+    const matchingCheckoutID = admin
+      .firestore()
+      .collection("mobileTransactions")
+      .where("name", "==", checkoutRequestId);
+    const queryResults = await matchingCheckoutID.get();
+
+    if (!queryResults.empty) {
+      const documentMatchingID = queryResults.docs[0];
+      await documentMatchingID.ref.set(transactionDet, { merge: true });
+    } else {
+      const lostTransactionRef = db
+        .collection("lost_transactions")
+        .doc(checkoutRequestId);
+      await lostTransactionRef.set(transactionDet);
     }
 
-    // Save payment details to Firestore
-    await firestore.collection("payments").doc(checkOutRequestID).set({
-      transCode,
-      phonePaidFrom,
-      amount,
-      transactionDate,
-    });
-
-    console.log(
-      `Payment details saved for checkoutRequestID: ${checkOutRequestID}`
-    );
+    return res.status(200).send("Callback received successfully.");
+  } else {
+    console.log("Failed transaction.");
   }
 
-  res.status(200).send("OK");
+  res.json({ result: "Payment response received" });
 });

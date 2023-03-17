@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:mpesa_flutter_plugin/mpesa_flutter_plugin.dart';
 import 'package:project_x/src/common_widgets/defaultButton.dart';
+import 'package:project_x/src/features/screens/mpesa_demo/demoMpesa3.dart';
 
 import '../../../constants/constants.dart';
 import '../../../size_config/size_config.dart';
 import 'qrdemo.dart';
-import 'qrdemo4.dart';
-import 'scanqr.dart';
 
 class MpesaTransaction extends StatefulWidget {
   const MpesaTransaction({super.key});
@@ -142,6 +141,20 @@ class _MpesaTransactionState extends State<MpesaTransaction> {
                     );
                   }),
             ),
+            Padding(
+                padding: EdgeInsets.symmetric(
+                    vertical: getScreenHeight(10),
+                    horizontal: getScreenWidth(20)),
+                child: DefaultButton(
+                    text: "Keronei's demo",
+                    pressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => MyHomePage1(),
+                        ),
+                      );
+                    })),
           ],
         ),
       ),
