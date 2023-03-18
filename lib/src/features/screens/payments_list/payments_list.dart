@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:project_x/src/size_config/size_config.dart';
 
 import '../../../constants/constants.dart';
+import 'package:intl/intl.dart';
 
 class PaymentsListScreen extends StatefulWidget {
   const PaymentsListScreen({super.key});
@@ -11,94 +14,45 @@ class PaymentsListScreen extends StatefulWidget {
 }
 
 class _PaymentsListScreenState extends State<PaymentsListScreen> {
-  final List<Transaction> transactions = [
-    Transaction(
-      name: "John Doe",
-      destination: "Paybill 1234",
-      amount: 100,
-      time: "10:00 AM",
-      date: "01/01/2022",
-    ),
-    Transaction(
-      name: "Jane Smith",
-      destination: "Tillnumber 5678",
-      amount: 200,
-      time: "11:00 AM",
-      date: "01/01/2022",
-    ),
-    Transaction(
-        name: "Mike Johnson",
+  final List<Transaction> transactions = [];
+
+  @override
+  void initState() {
+    super.initState();
+    fetchTransactions();
+  }
+
+  String convertDateFormat(String input) {
+    String year = input.substring(0, 4);
+    String month = input.substring(4, 6);
+    String day = input.substring(6, 8);
+    String hour = input.substring(8, 10);
+    String minute = input.substring(10, 12);
+
+    String output = "$day/$month/$year $hour:$minute";
+    return output;
+  }
+
+  void fetchTransactions() async {
+    final QuerySnapshot<Map<String, dynamic>> snapshot =
+        await FirebaseFirestore.instance.collection('mobileTransactions').get();
+
+    final List<Transaction> fetchedTransactions = snapshot.docs.map((doc) {
+      final Map<String, dynamic> data = doc.data();
+      return Transaction(
+        transactionCode: data['mpesaReceiptNumber'] as String,
+        phoneNumber: data['phoneNumber'] as int,
+        name: data['Name'] as String,
         destination: "Paybill 1234",
-        amount: 50,
-        time: "12:00 PM",
-        date: "01/01/2022"),
-    Transaction(
-        name: "Jessica Williams",
-        destination: "Tillnumber 5678",
-        amount: 75,
-        time: "1:00 PM",
-        date: "01/01/2022"),
-    Transaction(
-        name: "James Brown",
-        destination: "Paybill 1234",
-        amount: 125,
-        time: "2:00 PM",
-        date: "01/01/2022"),
-    Transaction(
-        name: "Mary Jones",
-        destination: "Tillnumber 5678",
-        amount: 150,
-        time: "3:00 PM",
-        date: "01/01/2022"),
-    Transaction(
-        name: "David Garcia",
-        destination: "Paybill 1234",
-        amount: 175,
-        time: "4:00 PM",
-        date: "01/01/2022"),
-    Transaction(
-        name: "Maria Rodriguez",
-        destination: "Tillnumber 5678",
-        amount: 200,
-        time: "5:00 PM",
-        date: "01/01/2022"),
-    Transaction(
-        name: "William Martinez",
-        destination: "Paybill 1234",
-        amount: 225,
-        time: "6:00 PM",
-        date: "01/01/2022"),
-    Transaction(
-        name: "Elizabeth Taylor",
-        destination: "Tillnumber 5678",
-        amount: 250,
-        time: "7:00 PM",
-        date: "01/01/2022"),
-    Transaction(
-        name: "Richard Hernandez",
-        destination: "Paybill 1234",
-        amount: 275,
-        time: "8:00 PM",
-        date: "01/01/2022"),
-    Transaction(
-        name: "Samantha Perez",
-        destination: "Tillnumber 5678",
-        amount: 300,
-        time: "9:00 PM",
-        date: "01/01/2022"),
-    Transaction(
-        name: "Richard Hernandez",
-        destination: "Paybill 1234",
-        amount: 275,
-        time: "8:00 PM",
-        date: "01/01/2022"),
-    Transaction(
-        name: "Samantha Perez",
-        destination: "Tillnumber 5678",
-        amount: 300,
-        time: "9:00 PM",
-        date: "01/01/2022"),
-  ];
+        amount: data['amount'] as int,
+        dateTime: data['transactionDate'] as int,
+      );
+    }).toList();
+
+    setState(() {
+      transactions.addAll(fetchedTransactions);
+    });
+  }
 
   final selectedRows = <Transaction>[];
 
@@ -120,16 +74,23 @@ class _PaymentsListScreenState extends State<PaymentsListScreen> {
         child: SingleChildScrollView(
           scrollDirection: Axis.vertical,
           child: Padding(
-            padding: const EdgeInsets.only(left: 5, right: 5, top: 10),
+            padding: const EdgeInsets.only(left: 1, right: 5),
             child: DataTable(
               horizontalMargin: 3,
+              dividerThickness: 2,
               showCheckboxColumn: false,
-              headingTextStyle: const TextStyle(
-                  color: Color.fromARGB(255, 44, 44, 44),
-                  fontWeight: FontWeight.bold),
+              headingRowHeight: getScreenHeight(45),
+              headingRowColor: MaterialStateColor.resolveWith(
+                  (states) => Color.fromARGB(253, 0, 47, 100).withOpacity(0.5)),
+              headingTextStyle: TextStyle(
+                  color: Theme.of(context).brightness == Brightness.dark
+                      ? Color.fromARGB(255, 5, 182, 79)
+                      : Color.fromARGB(255, 255, 255, 255),
+                  fontSize: getScreenWidth(15),
+                  fontWeight: FontWeight.w400),
               dataTextStyle: TextStyle(
-                  fontFamily: 'Consolas',
-                  fontSize: 13,
+                  // fontFamily: 'Consolas',
+                  fontSize: 14.5,
                   color: Theme.of(context).brightness == Brightness.dark
                       ? Colors.white
                       : Color.fromARGB(255, 19, 18, 18)),
@@ -141,12 +102,13 @@ class _PaymentsListScreenState extends State<PaymentsListScreen> {
                       BorderSide(color: Color.fromARGB(255, 116, 114, 114))),
               columnSpacing: 5.0,
               columns: const [
-                DataColumn(label: Text("Select")),
-                DataColumn(label: Text("Name")),
-                DataColumn(label: Text("Destination")),
-                DataColumn(label: Text("Amount")),
-                DataColumn(label: Text("Time")),
-                DataColumn(label: Text("Date"))
+                DataColumn(label: Text("SELECT")),
+                DataColumn(label: Text("NAME")),
+                DataColumn(label: Text("TRANSACTION CODE")),
+                DataColumn(label: Text("PHONE NUMBER")),
+                DataColumn(label: Text("DESTINATION")),
+                DataColumn(label: Text("AMOUNT")),
+                DataColumn(label: Text("DATE/TIME"))
               ],
               rows: transactions
                   .map((txn) => DataRow(
@@ -202,7 +164,10 @@ class _PaymentsListScreenState extends State<PaymentsListScreen> {
                                     ? const Color.fromARGB(255, 248, 150, 150)
                                     : null,
                                 padding: const EdgeInsets.all(8),
-                                child: Text(txn.destination),
+                                child: Text(
+                                  txn.transactionCode,
+                                  style: const TextStyle(),
+                                ),
                               ),
                             ),
                             DataCell(
@@ -211,11 +176,7 @@ class _PaymentsListScreenState extends State<PaymentsListScreen> {
                                     ? const Color.fromARGB(255, 248, 150, 150)
                                     : null,
                                 padding: const EdgeInsets.all(8),
-                                child: Text("Kshs. ${txn.amount}",
-                                    style: const TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        color:
-                                            Color.fromARGB(255, 230, 44, 44))),
+                                child: Text(txn.phoneNumber.toString()),
                               ),
                             ),
                             DataCell(
@@ -224,7 +185,9 @@ class _PaymentsListScreenState extends State<PaymentsListScreen> {
                                     ? const Color.fromARGB(255, 248, 150, 150)
                                     : null,
                                 padding: const EdgeInsets.all(8),
-                                child: Text(txn.time),
+                                child: Text(txn.destination,
+                                    style:
+                                        const TextStyle(color: Colors.green)),
                               ),
                             ),
                             DataCell(
@@ -233,7 +196,21 @@ class _PaymentsListScreenState extends State<PaymentsListScreen> {
                                     ? const Color.fromARGB(255, 248, 150, 150)
                                     : null,
                                 padding: const EdgeInsets.all(8),
-                                child: Text(txn.date),
+                                child: Text(
+                                  "Kshs. ${txn.amount}",
+                                  style: TextStyle(
+                                      color: Color.fromARGB(255, 230, 44, 44)),
+                                ),
+                              ),
+                            ),
+                            DataCell(
+                              Container(
+                                color: selectedRows.contains(txn)
+                                    ? const Color.fromARGB(255, 248, 150, 150)
+                                    : null,
+                                padding: const EdgeInsets.all(8),
+                                child: Text(
+                                    convertDateFormat(txn.dateTime.toString())),
                               ),
                             ),
                           ]))
@@ -247,16 +224,19 @@ class _PaymentsListScreenState extends State<PaymentsListScreen> {
 }
 
 class Transaction {
+  final String transactionCode;
   final String name;
+  final int phoneNumber;
   final String destination;
-  final double amount;
-  final String time;
-  final String date;
+  final int amount;
+  final int dateTime;
 
-  Transaction(
-      {required this.name,
-      required this.destination,
-      required this.amount,
-      required this.time,
-      required this.date});
+  Transaction({
+    required this.transactionCode,
+    required this.name,
+    required this.phoneNumber,
+    required this.destination,
+    required this.amount,
+    required this.dateTime,
+  });
 }

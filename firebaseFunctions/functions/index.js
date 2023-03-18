@@ -39,21 +39,20 @@ exports.mpesaCallback = functions.https.onRequest(async (req, res) => {
       mpesaReceiptNumber: mpesaReceiptNumber,
     };
 
-    const matchingCheckoutID = admin
-      .firestore()
-      .collection("mobileTransactions")
-      .where("name", "==", checkoutRequestId);
-    const queryResults = await matchingCheckoutID.get();
+    const mobileTransactionsRef = db.collection('mobileTransactions').doc(checkoutRequestId);
+    await mobileTransactionsRef.update(transactionDet);
 
-    if (!queryResults.empty) {
-      const documentMatchingID = queryResults.docs[0];
-      await documentMatchingID.ref.set(transactionDet, { merge: true });
-    } else {
-      const lostTransactionRef = db
-        .collection("lost_transactions")
-        .doc(checkoutRequestId);
-      await lostTransactionRef.set(transactionDet);
-    }
+    const message = {
+      data: {
+        transactionDate: String(transactionDate),
+        phoneNumber: String(phoneNumber),
+        amount: String(amount),
+        mpesaReceiptNumber: String(mpesaReceiptNumber),
+      },
+      topic: 'transaction_details'
+    };
+
+    await admin.messaging().send(message);
 
     return res.status(200).send("Callback received successfully.");
   } else {

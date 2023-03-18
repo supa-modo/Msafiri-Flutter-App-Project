@@ -1,15 +1,15 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 import '../../../constants/constants.dart';
 import '../../../size_config/size_config.dart';
 import 'components/qrScanScreen.dart';
 import 'payment_options.dart';
 
-import 'package:get/get.dart';
-
 class QRScanScreen1 extends StatefulWidget {
-  const QRScanScreen1({super.key});
+  final String mpesaNumber;
+  const QRScanScreen1({super.key, required this.mpesaNumber});
 
   @override
   State<QRScanScreen1> createState() => _QRScanScreenState1();
@@ -18,8 +18,16 @@ class QRScanScreen1 extends StatefulWidget {
 final _paymentDetailsController = TextEditingController();
 
 class _QRScanScreenState1 extends State<QRScanScreen1> {
-  bool pDetails = true;
+  bool pDetails = false;
   String? _scannedText;
+  String _jsonData = '';
+  late String _mpesaNumber;
+
+  @override
+  void initState() {
+    super.initState();
+    _mpesaNumber = widget.mpesaNumber;
+  }
 
   void _onScanQRCodePressed() async {
     final result = await Navigator.push(
@@ -31,6 +39,40 @@ class _QRScanScreenState1 extends State<QRScanScreen1> {
 
     setState(() {
       _scannedText = result;
+      String qrText =
+          result; // Replace this with the actual QR scanned text string
+
+      String transactionType = '';
+      String paymentNumber = '';
+      String accountReference = '';
+
+      // Separate the strings based on transaction type, payment number, and account reference
+      if (qrText.startsWith('PB')) {
+        transactionType = 'paybill';
+      } else if (qrText.startsWith('BG')) {
+        transactionType = 'tillNumber';
+      } else if (qrText.startsWith('SM')) {
+        transactionType = 'sendMoney';
+      }
+
+      List<String> qrParts = qrText.split(' ');
+      if (qrParts.length >= 2) {
+        paymentNumber = qrParts[1];
+      }
+      if (qrParts.length >= 3) {
+        accountReference = qrParts[2];
+      }
+
+      // Create a map with key-value pairs for the variables
+      Map<String, dynamic> qrData = {
+        'transactionType': transactionType,
+        'paymentNumber': paymentNumber,
+        'accountReference': accountReference
+      };
+
+      // Convert the map into a JSON format using json.encode
+      _jsonData = json.encode(qrData);
+      print(_jsonData); // Output: Account Reference: KBZ679Y
     });
   }
 
@@ -117,25 +159,46 @@ class _QRScanScreenState1 extends State<QRScanScreen1> {
                     ),
                     SizedBox(height: getScreenHeight(10)),
                     Container(
-                        height: getScreenHeight(55),
-                        width: getScreenWidth(400),
-                        decoration: BoxDecoration(
-                            color: const Color.fromARGB(255, 190, 190, 190),
-                            borderRadius: BorderRadius.circular(15)),
-                        child: Padding(
-                          padding: EdgeInsets.symmetric(
-                            horizontal: getScreenWidth(20),
-                            vertical: getScreenHeight(17),
+                      height: getScreenHeight(55),
+                      width: getScreenWidth(400),
+                      decoration: BoxDecoration(
+                          color: Color.fromARGB(108, 104, 104, 104),
+                          borderRadius: BorderRadius.circular(15)),
+                      child: Stack(
+                        children: [
+                          Padding(
+                            padding: EdgeInsets.symmetric(
+                              horizontal: getScreenWidth(20),
+                              vertical: getScreenHeight(17),
+                            ),
+                            child: Text(
+                              _scannedText ??
+                                  'Scanned Payment Details will appear here',
+                              style: TextStyle(
+                                  fontSize: getScreenWidth(15),
+                                  fontWeight: FontWeight.bold,
+                                  color: Color.fromARGB(255, 52, 136, 54)),
+                            ),
                           ),
-                          child: Text(
-                            _scannedText ??
-                                'Scanned Payment Details will appear here',
-                            style: TextStyle(
-                                fontSize: getScreenWidth(17),
-                                fontWeight: FontWeight.bold,
-                                color: Color.fromARGB(255, 52, 136, 54)),
+                          Positioned(
+                            top: getScreenHeight(17),
+                            right: getScreenWidth(20),
+                            child: GestureDetector(
+                              onTap: () {
+                                setState(() {
+                                  _scannedText = null;
+                                });
+                              },
+                              child: Icon(
+                                Icons.clear,
+                                color: Color.fromARGB(255, 52, 136, 54),
+                                size: getScreenWidth(24),
+                              ),
+                            ),
                           ),
-                        )),
+                        ],
+                      ),
+                    ),
                     SizedBox(height: getScreenHeight(5)),
                     Text(
                       'Or',
@@ -157,20 +220,25 @@ class _QRScanScreenState1 extends State<QRScanScreen1> {
                               color: appPrimaryColor),
                         ),
                         Checkbox(
-                            shape: const RoundedRectangleBorder(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(5)),
-                            ),
-                            value: pDetails,
-                            onChanged: (value) {
-                              setState(() {
-                                pDetails = value!;
-                              });
-                            })
+                          shape: const RoundedRectangleBorder(
+                            borderRadius: BorderRadius.all(Radius.circular(5)),
+                          ),
+                          value: pDetails,
+                          onChanged: (_jsonData == null)
+                              ? null
+                              : (value) {
+                                  setState(() {
+                                    pDetails = value!;
+                                  });
+                                },
+                        )
                       ],
                     ),
                     SizedBox(height: getScreenHeight(5)),
-                    CheckboxRow(pDetails: pDetails)
+                    CheckboxRow(
+                        pDetails: pDetails,
+                        jsonData: _jsonData,
+                        mpesaNumber: _mpesaNumber),
                   ],
                 ),
               ],
@@ -180,10 +248,4 @@ class _QRScanScreenState1 extends State<QRScanScreen1> {
       ),
     );
   }
-
-  // @override
-  // void dispose() {
-  //   _paymentDetailsController.dispose();
-  //   super.dispose();
-  // }
 }

@@ -24,8 +24,8 @@ class payment_list extends StatelessWidget {
                 .collection('users')
                 .doc(user?.uid)
                 .get();
-        String userType = snapshot.data()?['UserType'] ?? 'not set';
-        if (userType == 'operator') {
+        String isOperator = snapshot.data()?['isOperator'] ?? 'not set';
+        if (isOperator == 'operator') {
           Get.to(() => PaymentsListScreen());
         } else {
           ScaffoldMessenger.of(context).showSnackBar(

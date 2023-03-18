@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:project_x/src/features/screens/payment/payment2.dart';
@@ -10,11 +12,26 @@ class payment extends StatelessWidget {
     Key? key,
   }) : super(key: key);
 
+  Future<String> getUserPhone() async {
+    final FirebaseAuth auth = FirebaseAuth.instance;
+    final User? user = auth.currentUser;
+
+    final DocumentSnapshot userDoc = await FirebaseFirestore.instance
+        .collection('users')
+        .doc(user!.uid)
+        .get();
+
+    final String phoneNumber = userDoc.get('phoneNumber');
+    return phoneNumber;
+  }
+
   @override
   Widget build(BuildContext context) {
     return TextButton(
-      onPressed: () {
-        Get.to(() => QRScanScreen1());
+      onPressed: () async {
+        String phoneNumber =
+            await getUserPhone(); // Call getUserPhone and get the phone number
+        Get.to(() => QRScanScreen1(mpesaNumber: phoneNumber));
       },
       child: Column(
         children: [

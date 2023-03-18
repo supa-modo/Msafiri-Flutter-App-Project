@@ -5,6 +5,7 @@ import '../../../common_widgets/defaultButton.dart';
 import '../../../constants/constants.dart';
 import '../../../size_config/size_config.dart';
 import '../Map Screen/mapScreen2.dart';
+import '../payment/payment2.dart';
 
 class SearchLocationScreen extends StatefulWidget {
   const SearchLocationScreen({Key? key, this.pressed}) : super(key: key);
@@ -152,11 +153,13 @@ class _SearchLocationScreenState extends State<SearchLocationScreen> {
                               bottom: getScreenHeight(10)),
                           child: DefaultButton(
                             pressed: () {
-                              // Navigator.push(
-                              //     context,
-                              //     MaterialPageRoute(
-                              //         builder: (context) =>
-                              //             const QRScanScreen1()));
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      QRScanScreen1(mpesaNumber: _mpesaNumber),
+                                ),
+                              );
                             },
                             text: "Continue to Payment",
                           ),
