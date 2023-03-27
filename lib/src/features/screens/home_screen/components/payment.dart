@@ -2,10 +2,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:project_x/src/features/screens/payment/payment2.dart';
 
 import '../../../../constants/constants.dart';
 import '../../../../size_config/size_config.dart';
+import '../../payment/payment.dart';
 
 class payment extends StatelessWidget {
   const payment({
@@ -31,7 +31,7 @@ class payment extends StatelessWidget {
       onPressed: () async {
         String phoneNumber =
             await getUserPhone(); // Call getUserPhone and get the phone number
-        Get.to(() => QRScanScreen1(mpesaNumber: phoneNumber));
+        Get.to(() => QRScanScreen(mpesaNumber: phoneNumber));
       },
       child: Column(
         children: [

@@ -5,7 +5,7 @@ import '../../../common_widgets/defaultButton.dart';
 import '../../../constants/constants.dart';
 import '../../../size_config/size_config.dart';
 import '../Map Screen/mapScreen2.dart';
-import '../payment/payment2.dart';
+import '../payment/payment.dart';
 
 class SearchLocationScreen extends StatefulWidget {
   const SearchLocationScreen({Key? key, this.pressed}) : super(key: key);
@@ -18,7 +18,8 @@ class SearchLocationScreen extends StatefulWidget {
 class _SearchLocationScreenState extends State<SearchLocationScreen> {
   bool mPesa = true;
   bool cash = false;
-  late String _mpesaNumber;
+  String _mpesaNumber = '';
+  bool _validateMpesaNumber = false;
 
   @override
   Widget build(BuildContext context) {
@@ -119,47 +120,66 @@ class _SearchLocationScreenState extends State<SearchLocationScreen> {
                           child: TextFormField(
                             decoration: InputDecoration(
                               contentPadding: EdgeInsets.only(
-                                  top: getScreenHeight(5),
-                                  bottom: getScreenHeight(5),
-                                  left: getScreenWidth(20)),
+                                top: getScreenHeight(5),
+                                bottom: getScreenHeight(5),
+                                left: getScreenWidth(20),
+                              ),
                               labelText: "Enter Your Mpesa Number",
                               prefixText: '+254',
                               labelStyle: TextStyle(
-                                  fontSize: getScreenWidth(14),
-                                  fontWeight: FontWeight.w600),
+                                fontSize: getScreenWidth(14),
+                                fontWeight: FontWeight.w600,
+                              ),
                               enabledBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(15),
-                                  borderSide:
-                                      const BorderSide(color: appPrimaryColor)),
+                                borderRadius: BorderRadius.circular(15),
+                                borderSide:
+                                    const BorderSide(color: appPrimaryColor),
+                              ),
                               focusedBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(15),
-                                  borderSide:
-                                      const BorderSide(color: appPrimaryColor)),
+                                borderRadius: BorderRadius.circular(15),
+                                borderSide:
+                                    const BorderSide(color: appPrimaryColor),
+                              ),
+                              errorText: _validateMpesaNumber
+                                  ? "Enter a valid phone number"
+                                  : null,
                             ),
                             keyboardType: TextInputType.number,
                             maxLength: 9,
                             onChanged: (value) {
                               setState(() {
                                 _mpesaNumber = '254$value';
+                                _validateMpesaNumber = false;
                               });
                             },
                           ),
                         ),
                         Padding(
                           padding: EdgeInsets.only(
-                              left: getScreenWidth(60),
-                              right: getScreenWidth(60),
-                              top: getScreenHeight(10),
-                              bottom: getScreenHeight(10)),
+                            left: getScreenWidth(60),
+                            right: getScreenWidth(60),
+                            top: getScreenHeight(10),
+                            bottom: getScreenHeight(10),
+                          ),
                           child: DefaultButton(
                             pressed: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) =>
-                                      QRScanScreen1(mpesaNumber: _mpesaNumber),
-                                ),
-                              );
+                              if (_mpesaNumber.isEmpty) {
+                                setState(() {
+                                  _validateMpesaNumber = true;
+                                });
+                              } else if (_mpesaNumber.length != 12) {
+                                setState(() {
+                                  _validateMpesaNumber = true;
+                                });
+                              } else {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        QRScanScreen(mpesaNumber: _mpesaNumber),
+                                  ),
+                                );
+                              }
                             },
                             text: "Continue to Payment",
                           ),

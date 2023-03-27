@@ -3,6 +3,9 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:project_x/src/constants/constants.dart';
+import 'package:provider/provider.dart';
+
+import '../new_trip/location.dart';
 
 class MapScreen extends StatefulWidget {
   @override
@@ -12,7 +15,6 @@ class MapScreen extends StatefulWidget {
 class _MapScreenState extends State<MapScreen> {
   late GoogleMapController _controller;
   LocationData? _locationData;
-  static LatLng destination = const LatLng(-0.300199, 36.090025);
 
   Map<PolylineId, Polyline> polylines = {};
   List<LatLng> polylineCoordinates = [];
@@ -37,7 +39,22 @@ class _MapScreenState extends State<MapScreen> {
   }
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final locationProvider =
+        Provider.of<LocationProvider>(context, listen: false);
+    locationProvider.addListener(() {
+      _getPolyline();
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final locationProvider =
+        Provider.of<LocationProvider>(context, listen: false);
+    LatLng destination = LatLng(locationProvider.destinationLatitude ?? 0,
+        locationProvider.destinationLongitude ?? 0);
+
     return SafeArea(
       child: Scaffold(
         body: _locationData != null
@@ -60,14 +77,14 @@ class _MapScreenState extends State<MapScreen> {
                       BitmapDescriptor.hueRed,
                     ),
                   ),
-                  Marker(
-                    markerId: const MarkerId("Destination Location"),
-                    position:
-                        LatLng(destination.latitude, destination.longitude),
-                    icon: BitmapDescriptor.defaultMarkerWithHue(
-                      BitmapDescriptor.hueBlue,
+                  if (locationProvider.destination != null)
+                    Marker(
+                      markerId: const MarkerId("Destination Location"),
+                      position: destination,
+                      icon: BitmapDescriptor.defaultMarkerWithHue(
+                        BitmapDescriptor.hueBlue,
+                      ),
                     ),
-                  ),
                 },
                 polylines: Set<Polyline>.of(polylines.values),
               )
@@ -95,17 +112,32 @@ class _MapScreenState extends State<MapScreen> {
   }
 
   _getPolyline() async {
+    if (_locationData == null) return;
+
+    final locationProvider =
+        Provider.of<LocationProvider>(context, listen: false);
+    if (locationProvider.destination == null) return;
     PolylineResult result = await polylinePoints.getRouteBetweenCoordinates(
       googleApiKey,
       PointLatLng(_locationData!.latitude!, _locationData!.longitude!),
-      PointLatLng(-0.300199, 36.090025),
+      PointLatLng(locationProvider.destinationLatitude!,
+          locationProvider.destinationLongitude!),
       travelMode: TravelMode.driving,
     );
+
     if (result.points.isNotEmpty) {
+      //clearing the previous polyline coordinates list
+      polylineCoordinates.clear();
+
       result.points.forEach((PointLatLng point) {
         polylineCoordinates.add(LatLng(point.latitude, point.longitude));
       });
+
+      //clearing the previous polyline from the map
+      polylines.clear();
+
+      //add the updated polyline to the map
+      _addPolyLine();
     }
-    _addPolyLine();
   }
 }

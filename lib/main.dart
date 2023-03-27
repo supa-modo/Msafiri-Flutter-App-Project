@@ -7,8 +7,11 @@ import 'package:project_x/src/constants/constants.dart';
 import 'package:project_x/src/constants/theme.dart';
 import 'package:project_x/src/services/auth_repository.dart';
 import 'package:project_x/src/size_config/size_config.dart';
+import 'package:provider/provider.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
+
+import 'src/features/screens/new_trip/location.dart';
 
 void main() {
   MpesaFlutterPlugin.setConsumerKey(consumerKey);
@@ -18,7 +21,12 @@ void main() {
   WidgetsFlutterBinding.ensureInitialized();
   Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform)
       .then((value) => Get.put(AuthRepository()));
-  runApp(const MyApp());
+  runApp(
+    ChangeNotifierProvider(
+      create: (_) => LocationProvider(),
+      child: const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {

@@ -4,10 +4,13 @@ import 'package:flutter/material.dart';
 import 'package:google_place/google_place.dart';
 import 'package:project_x/src/constants/constants.dart';
 import 'package:project_x/src/features/screens/Map%20Screen/mapScreen2.dart';
+import 'package:provider/provider.dart';
 
 import '../../../size_config/size_config.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart' as location;
+
+import 'location.dart';
 
 class SearchScreen extends StatefulWidget {
   const SearchScreen({super.key});
@@ -19,7 +22,7 @@ class SearchScreen extends StatefulWidget {
 class _SearchScreenState extends State<SearchScreen> {
   final searchFieldController = TextEditingController();
 
-  static DetailsResult? destination;
+  // static DetailsResult? destination;
 
   late GooglePlace googlePlace;
   List<AutocompletePrediction> predictions = [];
@@ -87,7 +90,8 @@ class _SearchScreenState extends State<SearchScreen> {
                     } else {
                       setState(() {
                         predictions = [];
-                        destination = null;
+                        Provider.of<LocationProvider>(context, listen: false)
+                            .destination = null;
                       });
                     }
                   });
@@ -130,7 +134,8 @@ class _SearchScreenState extends State<SearchScreen> {
                           details.result != null &&
                           mounted) {
                         setState(() {
-                          destination = details.result;
+                          Provider.of<LocationProvider>(context, listen: false)
+                              .destination = details.result!;
                           searchFieldController.text =
                               details.result!.name!.toString();
                           predictions = [];

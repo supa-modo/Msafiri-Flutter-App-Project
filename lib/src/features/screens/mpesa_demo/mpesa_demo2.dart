@@ -25,20 +25,22 @@ class _MpesaTransactionState extends State<MpesaTransaction> {
     dynamic transactionInitialisation;
 
     try {
-      transactionInitialisation = await MpesaFlutterPlugin.initializeMpesaSTKPush(
-          businessShortCode: partyB,
-          transactionType: TransactionType.CustomerPayBillOnline,
-          amount: amount,
-          partyA: userPhone,
-          partyB: partyB,
-          callBackURL: Uri.parse(
-              'https://us-central1-pts-project-x2.cloudfunctions.net/mpesaCallback'),
-          accountReference: "shoe",
-          phoneNumber: userPhone,
-          baseUri: Uri(scheme: "https", host: "sandbox.safaricom.co.ke"),
-          transactionDesc: "purchase",
-          passKey:
-              'bfb279f9aa9bdbcf158e97dd71a467cd2e0c893059b10f78e6b72ada1ed2c919');
+      transactionInitialisation =
+          await MpesaFlutterPlugin.initializeMpesaSTKPush(
+              businessShortCode: partyB,
+              // transactionType: TransactionType.CustomerBuyGoodsOnline,
+              transactionType: TransactionType.CustomerPayBillOnline,
+              amount: amount,
+              partyA: userPhone,
+              partyB: partyB,
+              callBackURL: Uri.parse(
+                  'https://us-central1-pts-project-x2.cloudfunctions.net/mpesaCallback'),
+              accountReference: "shoe",
+              phoneNumber: userPhone,
+              baseUri: Uri(scheme: "https", host: "sandbox.safaricom.co.ke"),
+              transactionDesc: "purchase",
+              passKey:
+                  'bfb279f9aa9bdbcf158e97dd71a467cd2e0c893059b10f78e6b72ada1ed2c919');
 
       print("TRANSACTION RESULT: " + transactionInitialisation.toString());
 
@@ -53,7 +55,24 @@ class _MpesaTransactionState extends State<MpesaTransaction> {
     SizeConfig.init(context);
     return Scaffold(
       appBar: AppBar(
-        title: Text('Admin Demos'),
+        iconTheme: const IconThemeData(color: Colors.black),
+        titleTextStyle: TextStyle(
+          fontSize: getScreenWidth(22),
+          fontWeight: FontWeight.bold,
+          color: appPrimaryColor,
+        ),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_ios,
+              color: Color.fromARGB(255, 95, 94, 94)),
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+        ),
+        centerTitle: true,
+        title: const Text(
+          "Admin Demos",
+          style: TextStyle(color: Color.fromARGB(255, 95, 94, 94)),
+        ),
       ),
       body: Form(
         key: _formKey,

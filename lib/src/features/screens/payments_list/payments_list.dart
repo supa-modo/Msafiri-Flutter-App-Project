@@ -60,7 +60,7 @@ class _PaymentsListScreenState extends State<PaymentsListScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: appPrimaryColor,
+        backgroundColor: Color.fromARGB(255, 53, 121, 238),
         elevation: 0,
         systemOverlayStyle: const SystemUiOverlayStyle(
           statusBarColor: Color.fromARGB(255, 53, 121, 238),
@@ -77,7 +77,7 @@ class _PaymentsListScreenState extends State<PaymentsListScreen> {
             padding: const EdgeInsets.only(left: 1, right: 5),
             child: DataTable(
               horizontalMargin: 3,
-              dividerThickness: 2,
+              dividerThickness: 1,
               showCheckboxColumn: false,
               headingRowHeight: getScreenHeight(45),
               headingRowColor: MaterialStateColor.resolveWith(
@@ -186,8 +186,8 @@ class _PaymentsListScreenState extends State<PaymentsListScreen> {
                                     : null,
                                 padding: const EdgeInsets.all(8),
                                 child: Text(txn.destination,
-                                    style:
-                                        const TextStyle(color: Colors.green)),
+                                    style: const TextStyle(
+                                        color: appPrimaryColor)),
                               ),
                             ),
                             DataCell(
