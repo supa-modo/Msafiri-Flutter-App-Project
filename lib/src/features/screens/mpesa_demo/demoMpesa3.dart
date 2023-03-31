@@ -38,45 +38,6 @@ class _MyHomePage1State extends State<MyHomePage1> {
     }
   }
 
-  // Future<dynamic> startTransaction({
-  //   required String userPhone,
-  //   required double amount,
-  // }) async {
-  //   try {
-  //     final transactionInitialisation =
-  //         await MpesaFlutterPlugin.initializeMpesaSTKPush(
-  //       businessShortCode: "174379",
-  //       transactionType: TransactionType.CustomerPayBillOnline,
-  //       amount: amount,
-  //       partyA: userPhone,
-  //       partyB: partyB,
-  //       callBackURL: Uri.parse(
-  //         "https://us-central1-pts-project-x2.cloudfunctions.net/mpesaCallback",
-  //       ),
-  //       accountReference: "mpesa demo",
-  //       phoneNumber: userPhone,
-  //       baseUri: Uri.parse("https://sandbox.safaricom.co.ke"),
-  //       transactionDesc: "purchase",
-  //       passKey:
-  //           'bfb279f9aa9bdbcf158e97dd71a467cd2e0c893059b10f78e6b72ada1ed2c919',
-  //     );
-
-  //     final result = transactionInitialisation as Map<String, dynamic>;
-
-  //     if (result.containsKey("ResponseCode")) {
-  //       final transResponseCode = result["ResponseCode"] as String;
-  //       print("Resulting Code: " + transResponseCode);
-  //       if (transResponseCode == '0') {
-  //         updateAccount(result["CheckoutRequestID"] as String);
-  //       }
-  //     }
-
-  //     print("RESULT: " + transactionInitialisation.toString());
-  //   } catch (e) {
-  //     // Handle the exception here.
-  //     print("Exception Caught: " + e.toString());
-  //   }
-  // }
 
   // Define an async function to initialize Firebase
   Future<void> initializeFirebase() async {

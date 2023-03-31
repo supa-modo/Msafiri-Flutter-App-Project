@@ -5,6 +5,7 @@ import 'package:mpesa_flutter_plugin/mpesa_flutter_plugin.dart';
 import 'package:project_x/firebase_options.dart';
 import 'package:project_x/src/constants/constants.dart';
 import 'package:project_x/src/constants/theme.dart';
+import 'package:project_x/src/features/models/checkBoxProvider.dart';
 import 'package:project_x/src/services/auth_repository.dart';
 import 'package:project_x/src/size_config/size_config.dart';
 import 'package:provider/provider.dart';
@@ -22,8 +23,11 @@ void main() {
   Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform)
       .then((value) => Get.put(AuthRepository()));
   runApp(
-    ChangeNotifierProvider(
-      create: (_) => LocationProvider(),
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => LocationProvider()),
+        ChangeNotifierProvider(create: (_) => SelectedRows()),
+      ],
       child: const MyApp(),
     ),
   );

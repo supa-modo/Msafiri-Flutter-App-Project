@@ -4,10 +4,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:mpesa_flutter_plugin/mpesa_flutter_plugin.dart';
 import 'package:project_x/src/features/screens/home_screen/components/payment.dart';
 import 'package:project_x/src/features/screens/successfulpayment.dart/paymtSuccess.dart';
-import 'package:project_x/src/features/screens/successfulpayment.dart/successpymt.dart';
 import 'package:provider/provider.dart';
 
 import '../../../common_widgets/defaultButton.dart';
@@ -15,7 +15,6 @@ import '../../../constants/constants.dart';
 import '../../../constants/theme.dart';
 import '../../../size_config/size_config.dart';
 import '../new_trip/location.dart';
-import '../successfulpayment.dart/paymentsuccess.dart';
 import 'components/qrScanScreen.dart';
 import 'components/textfields.dart';
 
@@ -153,13 +152,13 @@ class _QRScanScreenState1 extends State<QRScanScreen> {
           setState(() {
             checkOutReqID = result["CheckoutRequestID"] as String;
           });
-          getData();
+          // getData();
           Navigator.push(
             context,
             MaterialPageRoute(
               // builder: (context) => PaymentSuccessful(checkOutRequestID: checkOutReqID),
               builder: (context) =>
-                  PaymentSuccessful(checkOutRequestID: checkOutReqID),
+                  PaymentSuccessful(checkOutRequestID: checkOutReqID, partyB: paybill),
             ),
           );
         }
@@ -205,6 +204,14 @@ class _QRScanScreenState1 extends State<QRScanScreen> {
           setState(() {
             checkOutReqID = result["CheckoutRequestID"] as String;
           });
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              // builder: (context) => PaymentSuccessful(checkOutRequestID: checkOutReqID),
+              builder: (context) =>
+                  PaymentSuccessful(checkOutRequestID: checkOutReqID, partyB: tillNumber),
+            ),
+          );
         }
       }
 
@@ -632,6 +639,9 @@ class _QRScanScreenState1 extends State<QRScanScreen> {
                                 amountToPay = double.parse(value);
                               });
                             },
+                            inputFormatters: [
+                              FilteringTextInputFormatter.digitsOnly
+                            ],
                           ),
                           Visibility(
                             visible: amountToPay < 1,

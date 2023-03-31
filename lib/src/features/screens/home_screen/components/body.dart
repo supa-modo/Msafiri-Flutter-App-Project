@@ -32,8 +32,8 @@ List<Map<String, String>> carouselItems = [
     'text': "Live location gps tracking to your destination"
   },
   {
-    'imagePath': "assets/images/transactions.png",
-    'text': "Still in development"
+    'imagePath': "assets/images/qrScan.png",
+    'text': "Scan and make payments in seconds"
   },
   {
     'imagePath': "assets/images/invoice.jpg",
@@ -43,7 +43,6 @@ List<Map<String, String>> carouselItems = [
 
 class _BodyState extends State<Body> {
   CarouselController carouselController = CarouselController();
-
   var currentPageValue = 0;
 
   @override
@@ -61,7 +60,7 @@ class _BodyState extends State<Body> {
                     items: carouselItems.map((item) {
                       return Stack(children: [
                         Container(
-                            height: getScreenHeight(230),
+                            height: getScreenHeight(232),
                             margin: EdgeInsets.only(
                                 top: getScreenHeight(10),
                                 bottom: getScreenHeight(10)),
@@ -70,7 +69,7 @@ class _BodyState extends State<Body> {
                               image: DecorationImage(
                                   fit: BoxFit.cover,
                                   image: AssetImage(item['imagePath']!)),
-                              color: const Color.fromARGB(235, 106, 110, 124),
+                              color: Color.fromARGB(255, 255, 255, 255),
                               borderRadius: BorderRadius.circular(20),
                             )),
                         Positioned(
@@ -98,7 +97,7 @@ class _BodyState extends State<Body> {
                       enlargeCenterPage: true,
                       scrollDirection: Axis.horizontal,
                       enableInfiniteScroll: true,
-                      viewportFraction: 0.84,
+                      viewportFraction: 0.82,
                       aspectRatio: 2.0,
                       height: getScreenHeight(240),
                       onPageChanged: (index, reason) {

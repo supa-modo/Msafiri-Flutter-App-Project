@@ -1,12 +1,16 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:project_x/src/size_config/size_config.dart';
+import '../../../constants/constants.dart';
 import '../home_screen/home_screen.dart';
 
 class PaymentSuccessful extends StatefulWidget {
   final String checkOutRequestID;
+  final String partyB;
 
-  PaymentSuccessful({super.key, required this.checkOutRequestID});
+  PaymentSuccessful(
+      {super.key, required this.checkOutRequestID, required this.partyB});
 
   @override
   State createState() => _PaymentSuccessfulState();
@@ -19,12 +23,25 @@ class _PaymentSuccessfulState extends State<PaymentSuccessful> {
   int amount = 0;
   bool isLoading = true;
   String checkOutRequestID = "";
+  String partyB = "";
 
   @override
   void initState() {
     super.initState();
     checkOutRequestID = widget.checkOutRequestID;
+    partyB = widget.partyB;
     fetchTransactionDetails(checkOutRequestID);
+  }
+
+  String convertDateFormat(String input) {
+    String year = input.substring(0, 4);
+    String month = input.substring(4, 6);
+    String day = input.substring(6, 8);
+    String hour = input.substring(8, 10);
+    String minute = input.substring(10, 12);
+
+    String output = "$day/$month/$year $hour:$minute";
+    return output;
   }
 
   Future<void> fetchTransactionDetails(String checkOutRequestID) async {
@@ -41,18 +58,27 @@ class _PaymentSuccessfulState extends State<PaymentSuccessful> {
 
     if (doc.exists) {
       final data = doc.data();
-      destination = data!["Destination"] ?? 'Not set';
-      transactionDate = data["transactionDate"];
-      mpesaReceiptNumber = data["mpesaReceiptNumber"];
-      amount = data["amount"];
+      if (data != null &&
+          data.containsKey("Destination") &&
+          data.containsKey("amount") &&
+          data.containsKey("mpesaReceiptNumber") &&
+          data.containsKey("transactionDate")) {
+        destination = data["Destination"] ?? 'Not set';
+        transactionDate = data["transactionDate"];
+        mpesaReceiptNumber = data["mpesaReceiptNumber"];
+        amount = data["amount"];
 
-      // update state and remove circular progress indicator
-      setState(() {
-        isLoading = false;
-      });
+        // update state and remove circular progress indicator
+        setState(() {
+          isLoading = false;
+        });
+      } else {
+        // wait for 1 minute and try again
+        await Future.delayed(Duration(seconds: 5));
+        fetchTransactionDetails(checkOutRequestID);
+      }
     } else {
-      // wait for 1 minute and try again
-      await Future.delayed(Duration(seconds: 5));
+      await Future.delayed(Duration(seconds: 2));
       fetchTransactionDetails(checkOutRequestID);
     }
   }
@@ -61,9 +87,20 @@ class _PaymentSuccessfulState extends State<PaymentSuccessful> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: isLoading
-          ? Center(child: CircularProgressIndicator())
+          ? Center(
+              child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                CircularProgressIndicator(color: appPrimaryColor),
+                SizedBox(height: getScreenHeight(10)),
+                Text(
+                  'Processing payment, please wait...',
+                  style: TextStyle(color: appPrimaryColor),
+                ),
+              ],
+            ))
           : Container(
-              padding: const EdgeInsets.only(left: 60, right: 60, top: 200),
+              padding: const EdgeInsets.only(left: 60, right: 60, top: 150),
               child: Column(
                 children: [
                   const SizedBox(
@@ -80,24 +117,57 @@ class _PaymentSuccessfulState extends State<PaymentSuccessful> {
                         color: Color.fromARGB(255, 53, 53, 53)),
                   ),
                   const SizedBox(height: 20.0),
-                  Text(
-                    "Transaction Code: $mpesaReceiptNumber",
-                    style: const TextStyle(
-                        fontSize: 14.0,
-                        color: Color.fromARGB(255, 52, 52, 54),
-                        fontWeight: FontWeight.bold),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        "Transaction Code: ",
+                        style: TextStyle(
+                            fontSize: 14.0,
+                            color: Color.fromARGB(255, 52, 52, 54)),
+                      ),
+                      Text(
+                        "$mpesaReceiptNumber",
+                        style: const TextStyle(
+                            fontSize: 15.0,
+                            color: Colors.green,
+                            fontWeight: FontWeight.bold),
+                      ),
+                    ],
                   ),
                   const SizedBox(height: 10.0),
-                  Text(
-                    "Destination: $destination",
-                    style: const TextStyle(
-                        fontSize: 14.0, color: Color.fromARGB(255, 52, 52, 54)),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Text(
+                        "Date: ",
+                        style: TextStyle(
+                            fontSize: 14.0,
+                            color: Color.fromARGB(255, 52, 52, 54)),
+                      ),
+                      Text(
+                        convertDateFormat(transactionDate.toString()),
+                        style: const TextStyle(
+                            fontSize: 15.0, fontWeight: FontWeight.bold),
+                      ),
+                    ],
                   ),
                   const SizedBox(height: 10.0),
-                  Text(
-                    "Date: $transactionDate",
-                    style: const TextStyle(
-                        fontSize: 14.0, color: Color.fromARGB(255, 52, 52, 54)),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Text(
+                        "Destination: ",
+                        style: TextStyle(
+                            fontSize: 14.0,
+                            color: Color.fromARGB(255, 52, 52, 54)),
+                      ),
+                      Text(
+                        destination,
+                        style: const TextStyle(
+                            fontSize: 15.0, fontWeight: FontWeight.bold),
+                      ),
+                    ],
                   ),
                   const SizedBox(height: 10.0),
                   Row(
@@ -112,9 +182,26 @@ class _PaymentSuccessfulState extends State<PaymentSuccessful> {
                       Text(
                         "Kshs. $amount",
                         style: const TextStyle(
-                            fontSize: 14.0,
+                            fontSize: 15.0,
                             color: Colors.red,
                             fontWeight: FontWeight.bold),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: getScreenHeight(10)),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Text(
+                        "Paid to: ",
+                        style: TextStyle(
+                            fontSize: 14.0,
+                            color: Color.fromARGB(255, 52, 52, 54)),
+                      ),
+                      Text(
+                        partyB,
+                        style: const TextStyle(
+                            fontSize: 15.0, fontWeight: FontWeight.bold),
                       ),
                     ],
                   ),

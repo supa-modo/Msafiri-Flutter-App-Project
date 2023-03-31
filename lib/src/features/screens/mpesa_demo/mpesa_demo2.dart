@@ -53,128 +53,135 @@ class _MpesaTransactionState extends State<MpesaTransaction> {
   @override
   Widget build(BuildContext context) {
     SizeConfig.init(context);
-    return Scaffold(
-      appBar: AppBar(
-        iconTheme: const IconThemeData(color: Colors.black),
-        titleTextStyle: TextStyle(
-          fontSize: getScreenWidth(22),
-          fontWeight: FontWeight.bold,
-          color: appPrimaryColor,
+    return MaterialApp(
+      home: Scaffold(
+        backgroundColor: Color.fromARGB(255, 124, 92, 62),
+        appBar: AppBar(
+          iconTheme: const IconThemeData(color: Colors.black),
+          titleTextStyle: TextStyle(
+            fontSize: getScreenWidth(22),
+            fontWeight: FontWeight.bold,
+            color: appPrimaryColor,
+          ),
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back_ios,
+                color: Color.fromARGB(255, 255, 255, 255)),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+          ),
+          centerTitle: true,
+          title: const Text(
+            "Admin Demos",
+            style: TextStyle(color: Color.fromARGB(255, 255, 255, 255)),
+          ),
         ),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios,
-              color: Color.fromARGB(255, 95, 94, 94)),
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
-        ),
-        centerTitle: true,
-        title: const Text(
-          "Admin Demos",
-          style: TextStyle(color: Color.fromARGB(255, 95, 94, 94)),
-        ),
-      ),
-      body: Form(
-        key: _formKey,
-        child: Column(
-          children: <Widget>[
-            Text(
-              "Mpesa Demo Trials",
-              style: headingStyle,
-            ),
-            Container(
-              height: getScreenHeight(30),
-              width: getScreenWidth(300),
-              color: Colors.orange,
-            ),
-            SizedBox(height: 15),
-            TextFormField(
-              // controller: _phoneNumberField,
-              decoration: InputDecoration(
-                prefixText: '254',
-                contentPadding:
-                    const EdgeInsets.only(top: 9, bottom: 9, left: 20),
-                labelText: "Enter Your Mpesa Number",
-                labelStyle:
-                    const TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
-                enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(15),
-                    borderSide: BorderSide(color: appPrimaryColor)),
-                focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(15),
-                    borderSide: BorderSide(color: appPrimaryColor)),
+        body: Form(
+          key: _formKey,
+          child: Column(
+            children: <Widget>[
+              Text(
+                "Mpesa Demo Trials",
+                style: headingStyle,
               ),
-              keyboardType: TextInputType.number,
-              maxLength: 9,
-              onChanged: (value) {
-                setState(() {
-                  _mpesaNumber = '254$value';
-                });
-              },
-            ),
-            TextFormField(
-              // controller: _amountField,
-              decoration: InputDecoration(
-                contentPadding:
-                    const EdgeInsets.only(top: 9, bottom: 9, left: 20),
-                labelText: "Enter Amount",
-                labelStyle:
-                    const TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
-                enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(15),
-                    borderSide: BorderSide(color: appPrimaryColor)),
-                focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(15),
-                    borderSide: BorderSide(color: appPrimaryColor)),
+              Container(
+                height: getScreenHeight(30),
+                width: getScreenWidth(300),
+                color: Color.fromARGB(255, 6, 206, 56),
               ),
-              keyboardType: TextInputType.number,
-              onChanged: (value) {
-                setState(() {
-                  _amount = double.parse(value);
-                });
-              },
-            ),
-            Padding(
-              padding: EdgeInsets.symmetric(
-                  vertical: getScreenHeight(10),
-                  horizontal: getScreenWidth(20)),
-              child: DefaultButton(
-                  text: "Make Payment",
-                  pressed: () async {
-                    startCheckout(userPhone: _mpesaNumber, amount: _amount);
-                  }),
-            ),
-            Padding(
-              padding: EdgeInsets.symmetric(
-                  vertical: getScreenHeight(10),
-                  horizontal: getScreenWidth(20)),
-              child: DefaultButton(
-                  text: "Qr Scan Demo",
-                  pressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => QRCodeScannerScreen3(),
-                        // builder: (context) => QRCodeScannerScreen1(),
-                      ),
-                    );
-                  }),
-            ),
-            Padding(
+              SizedBox(height: 15),
+              TextFormField(
+                // controller: _phoneNumberField,
+                decoration: InputDecoration(
+                  prefixText: '254',
+                  contentPadding:
+                      const EdgeInsets.only(top: 9, bottom: 9, left: 20),
+                  labelText: "Enter Your Mpesa Number",
+                  labelStyle: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 14,
+                      fontWeight: FontWeight.w600),
+                  enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(15),
+                      borderSide: BorderSide(color: appPrimaryColor)),
+                  focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(15),
+                      borderSide: BorderSide(color: appPrimaryColor)),
+                ),
+                keyboardType: TextInputType.number,
+                maxLength: 9,
+                onChanged: (value) {
+                  setState(() {
+                    _mpesaNumber = '254$value';
+                  });
+                },
+              ),
+              TextFormField(
+                // controller: _amountField,
+                decoration: InputDecoration(
+                  contentPadding:
+                      const EdgeInsets.only(top: 9, bottom: 9, left: 20),
+                  labelText: "Enter Amount",
+                  labelStyle: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 14,
+                      fontWeight: FontWeight.w600),
+                  enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(15),
+                      borderSide: BorderSide(color: appPrimaryColor)),
+                  focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(15),
+                      borderSide: BorderSide(color: appPrimaryColor)),
+                ),
+                keyboardType: TextInputType.number,
+                onChanged: (value) {
+                  setState(() {
+                    _amount = double.parse(value);
+                  });
+                },
+              ),
+              Padding(
                 padding: EdgeInsets.symmetric(
                     vertical: getScreenHeight(10),
                     horizontal: getScreenWidth(20)),
                 child: DefaultButton(
-                    text: "Keronei's demo",
+                    text: "Make Payment",
+                    pressed: () async {
+                      startCheckout(userPhone: _mpesaNumber, amount: _amount);
+                    }),
+              ),
+              Padding(
+                padding: EdgeInsets.symmetric(
+                    vertical: getScreenHeight(10),
+                    horizontal: getScreenWidth(20)),
+                child: DefaultButton(
+                    text: "Qr Scan Demo",
                     pressed: () {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => MyHomePage1(),
+                          builder: (context) => QRCodeScannerScreen3(),
+                          // builder: (context) => QRCodeScannerScreen1(),
                         ),
                       );
-                    })),
-          ],
+                    }),
+              ),
+              Padding(
+                  padding: EdgeInsets.symmetric(
+                      vertical: getScreenHeight(10),
+                      horizontal: getScreenWidth(20)),
+                  child: DefaultButton(
+                      text: "Keronei's demo",
+                      pressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => MyHomePage1(),
+                          ),
+                        );
+                      })),
+            ],
+          ),
         ),
       ),
     );

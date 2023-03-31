@@ -2,9 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:project_x/src/size_config/size_config.dart';
+import 'package:provider/provider.dart';
 
 import '../../../constants/constants.dart';
 import 'package:intl/intl.dart';
+
+import '../../models/checkBoxProvider.dart';
 
 class PaymentsListScreen extends StatefulWidget {
   const PaymentsListScreen({super.key});
@@ -15,6 +18,8 @@ class PaymentsListScreen extends StatefulWidget {
 
 class _PaymentsListScreenState extends State<PaymentsListScreen> {
   final List<Transaction> transactions = [];
+
+  late SelectedRows selectedRows;
 
   @override
   void initState() {
@@ -43,7 +48,7 @@ class _PaymentsListScreenState extends State<PaymentsListScreen> {
         transactionCode: data['mpesaReceiptNumber'] as String,
         phoneNumber: data['phoneNumber'] as int,
         name: data['Name'] as String,
-        destination: "Paybill 1234",
+        destination: data['Destination'] as String,
         amount: data['amount'] as int,
         dateTime: data['transactionDate'] as int,
       );
@@ -54,10 +59,11 @@ class _PaymentsListScreenState extends State<PaymentsListScreen> {
     });
   }
 
-  final selectedRows = <Transaction>[];
+  // final selectedRows = <Transaction>[];
 
   @override
   Widget build(BuildContext context) {
+    selectedRows = Provider.of<SelectedRows>(context);
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Color.fromARGB(255, 53, 121, 238),
@@ -112,15 +118,13 @@ class _PaymentsListScreenState extends State<PaymentsListScreen> {
               ],
               rows: transactions
                   .map((txn) => DataRow(
-                          selected: selectedRows.contains(txn),
+                          selected: selectedRows.selectedRows.contains(txn),
                           onSelectChanged: (bool? selected) {
                             setState(() {
-                              if (selected != null) {
-                                if (selected) {
-                                  selectedRows.add(txn);
-                                } else {
-                                  selectedRows.remove(txn);
-                                }
+                              if (selected != null && selected) {
+                                selectedRows.add(txn);
+                              } else {
+                                selectedRows.remove(txn);
                               }
                             });
                           },
@@ -131,7 +135,7 @@ class _PaymentsListScreenState extends State<PaymentsListScreen> {
                                   borderRadius:
                                       BorderRadius.all(Radius.circular(5)),
                                 ),
-                                value: selectedRows.contains(txn),
+                                value: selectedRows.selectedRows.contains(txn),
                                 onChanged: (bool? value) {
                                   setState(() {
                                     if (value!) {
@@ -147,7 +151,7 @@ class _PaymentsListScreenState extends State<PaymentsListScreen> {
                             ),
                             DataCell(
                               Container(
-                                color: selectedRows.contains(txn)
+                                color: selectedRows.selectedRows.contains(txn)
                                     ? const Color.fromARGB(255, 248, 150, 150)
                                     : null,
                                 padding: const EdgeInsets.all(8),
@@ -160,7 +164,7 @@ class _PaymentsListScreenState extends State<PaymentsListScreen> {
                             ),
                             DataCell(
                               Container(
-                                color: selectedRows.contains(txn)
+                                color: selectedRows.selectedRows.contains(txn)
                                     ? const Color.fromARGB(255, 248, 150, 150)
                                     : null,
                                 padding: const EdgeInsets.all(8),
@@ -172,7 +176,7 @@ class _PaymentsListScreenState extends State<PaymentsListScreen> {
                             ),
                             DataCell(
                               Container(
-                                color: selectedRows.contains(txn)
+                                color: selectedRows.selectedRows.contains(txn)
                                     ? const Color.fromARGB(255, 248, 150, 150)
                                     : null,
                                 padding: const EdgeInsets.all(8),
@@ -181,7 +185,7 @@ class _PaymentsListScreenState extends State<PaymentsListScreen> {
                             ),
                             DataCell(
                               Container(
-                                color: selectedRows.contains(txn)
+                                color: selectedRows.selectedRows.contains(txn)
                                     ? const Color.fromARGB(255, 248, 150, 150)
                                     : null,
                                 padding: const EdgeInsets.all(8),
@@ -192,7 +196,7 @@ class _PaymentsListScreenState extends State<PaymentsListScreen> {
                             ),
                             DataCell(
                               Container(
-                                color: selectedRows.contains(txn)
+                                color: selectedRows.selectedRows.contains(txn)
                                     ? const Color.fromARGB(255, 248, 150, 150)
                                     : null,
                                 padding: const EdgeInsets.all(8),
@@ -205,7 +209,7 @@ class _PaymentsListScreenState extends State<PaymentsListScreen> {
                             ),
                             DataCell(
                               Container(
-                                color: selectedRows.contains(txn)
+                                color: selectedRows.selectedRows.contains(txn)
                                     ? const Color.fromARGB(255, 248, 150, 150)
                                     : null,
                                 padding: const EdgeInsets.all(8),
